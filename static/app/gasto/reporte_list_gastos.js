@@ -54,6 +54,7 @@ $(function () {
                 text: '<i class="fa fa-file-pdf"> </i> PDF Reporte ',
                 className: 'btn btn-danger',
                 extend: 'pdfHtml5',
+                footer:true,
                 orientation: 'landscape', //portrait
                 pageSize: 'A4', //A3 , A5 , A6 , legal , letter
                 download: 'open',

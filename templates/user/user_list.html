@@ -1,33 +1,21 @@
 {% extends 'bases/list.html' %}
 {% load  static %}
 {% block table %}
-    <div class="card-header">
-        <a href="{{ nuevo }}" class="btn btn-primary btn-sm">
-            <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Registro
-        </a>
-        <thead>
-        <tr>
-            <!--<th class="center">
-                <label class="pos-rel">
-                    <input type="checkbox" class="ace"/>
-                    <span class="lbl"></span>
-                </label>
-            </th> -->
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Username</th>
-            <th>Correo</th>
-            <th>Fecha de Registro</th>
-            <th>Grupos</th>
-            <th>Opciones</th>
-        </tr>
-        </thead>
-        <tbody>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Username</th>
+        <th>Correo</th>
+        <th>Fecha de Registro</th>
+        <th>Grupos</th>
+        <th>Opciones</th>
+    </tr>
+    </thead>
+    <tbody>
 
-        </tbody>
-    </div>
-
+    </tbody>
 {% endblock %}
 {% block scripts_extra %}
     <script src="{% static 'app/user/list.js' %}"></script>

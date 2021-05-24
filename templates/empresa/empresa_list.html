@@ -1,4 +1,7 @@
 {% extends 'bases/list.html' %}
+{% block boton_nuevo %}
+
+{% endblock %}
 {% block table %}
     <thead>
     <tr>
@@ -40,10 +43,6 @@
                 <a type="button" class="btn btn-outline-success btn-sm btn-round" data-toggle="tooltip"
                        title="Editar Datos"
                       href="{% url 'empresa:editar' empresa.id %}"><i class="fa fa-edit"></i>
-                </a>
-                <a type="button" class="btn btn-outline-danger btn-sm btn-round" data-toggle="tooltip"
-                       title="Eliminar Datos"
-                      href="{% url 'empresa:eliminar' empresa.id %}"><i class="fa fa-trash"></i>
                 </a>
             </td>
         </tr>

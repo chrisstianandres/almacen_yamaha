@@ -31,9 +31,8 @@ class empresa_update(LoginRequiredMixin,usuariomixin,UpdateView):
     model = empresa
     form_class = empresaForm
     template_name = 'empresa/empresa_form.html'
-    success_url = reverse_lazy('empleado:lista')
+    success_url = reverse_lazy('empresa:lista')
 
-    #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -49,7 +48,7 @@ class empresa_delete(LoginRequiredMixin,usuariomixin,DeleteView):
     model = empresa
     form_class = empresaForm
     template_name = 'form_delete.html'
-    success_url = reverse_lazy('empleado:lista')
+    success_url = reverse_lazy('empresa:lista')
 
     #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
