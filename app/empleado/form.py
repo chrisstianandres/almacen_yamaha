@@ -10,6 +10,7 @@ class empleadoForm(ModelForm):
     class Meta:
         model = empleado
         fields = '__all__'
+        labels = {'telefono': 'Celular'}
         widgets = {
             'cedula': TextInput(attrs={
                 'class': 'form-control',
@@ -43,7 +44,7 @@ class empleadoForm(ModelForm):
             }),
             'telefono': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ingrese su numero de telefono',
+                'placeholder': 'Ingrese su numero de celular',
                 'sytle': 'with 100%',
 
             }),

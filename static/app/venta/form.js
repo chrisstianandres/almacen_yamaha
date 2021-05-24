@@ -12,7 +12,7 @@ var venta = {
         producto: []
 
     },
-     get_ids: function () {
+    get_ids: function () {
         var ids = [];
         $.each(this.items.producto, function (key, value) {
             ids.push(value.id);
@@ -22,7 +22,6 @@ var venta = {
     //agregar los productos
     add: function (item) {
         this.items.producto.push(item);
-        this.items.producto = this.exclude_duplicados(this.items.producto);
         this.list();
     },
     //calcular
@@ -30,7 +29,7 @@ var venta = {
         var indice = $('input[name="indice"]').val();
         var subtotal = 0.00;
         $.each(this.items.producto, function (pos, dict) {
-            dict.subtotal = dict.cantidad * parseFloat(dict.pvp);
+            dict.subtotal = dict.cantidad * parseFloat(dict.p_venta);
             subtotal += dict.subtotal;
         });
         var iva_p = $('input[name="iva_empresa"]').val();
@@ -56,7 +55,7 @@ var venta = {
                 {"data": "modelo.nombre"},
                 {"data": "stock"},
                 {"data": "cantidad"},
-                {"data": "pvp"},
+                {"data": "p_venta"},
                 {"data": "subtotal"},
             ],
             language: {
@@ -107,24 +106,21 @@ var venta = {
                     min: 1,
                     max: data.stock,
                     step: 1
-                });
+                }).keypress(function (e) {
+                    if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+                        return false;
+                    }
+                }).on('keyup', function () {
+                    if ($(this).val() > data.stock) {
+                        menssaje_error('Error con el stock', 'No puedes ingresar una cantidad mayor al stock disponible', '');
+                    }
+                });//Para solo numeros
             }
         });
-    },
-    exclude_duplicados: function (array) {
-        this.items.producto = [];
-        let hash = {};
-        result = array.filter(o => hash[o.id] ? false : hash[o.id] = true);
-        return result;
-
     }
 };
 $(function () {
     venta.list();
-    $('.select2').select2({
-        theme: "bootstrap4",
-        language: 'es'
-    });
 
     $('#fecha_venta').datetimepicker({
         format: 'YYYY-MM-DD',
@@ -151,12 +147,9 @@ $(function () {
                 },
                 dataType: 'json',
             }).done(function (data) {
-                console.log(data);
                 response(data);
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                //alert(textStatus + ': ' + errorThrown);
-            }).always(function (data) {
-
+                menssaje_error('Error!', textStatus + ': ' + errorThrown, '');
             });
         },
         delay: 500,
@@ -171,68 +164,68 @@ $(function () {
         }
     });
 
-     // agregar cliente modal envento click boton
+    // agregar cliente modal envento click boton
     $('#btnaddcliente').on('click', function () {
         //presentar modal de cliente
         $('#mymodalcliente').modal('show');
     });
 
-       //modal de tabla de productos
+    //modal de tabla de productos
     $('#buscar_producto').on('click', function () {
-            tbldetalle = $('#tbldetalle').DataTable({
-                responsive: true,
-                autoWidth: false,
-                destroy: true,
-                deferRender: true,
-                ajax: {
-                    url: window.location.pathname,
-                    type: 'POST',
-                    data: {
-                        'action': 'detalle',
-                        'ids': JSON.stringify(venta.get_ids())
-                        //'id': data.id
-                    },
-                    dataSrc: ""
+        tbldetalle = $('#tbldetalle').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'detalle',
+                    'ids': JSON.stringify(venta.get_ids())
+                    //'id': data.id
                 },
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
-                },
-                columns: [
-                    {"data": "nombre"},
-                    {"data": "marca.nombre"},
-                    {"data": "modelo.nombre"},
-                    {"data": "stock"},
-                    {"data": "id"},
-
-                ],
-                columnDefs: [
-
-                    {
-                        targets: '_all',
-                        class: 'text-center',
-
-                    },
-                     {
-                targets: [-1],
-                class: 'text-center',
-                width: '10%',
-                orderable: false,
-                render: function (data, type, row) {
-                    return row.stock >= 1 ? '<a style="color: white" type="button" class="btn btn-success btn-xs" rel="select" ' +
-                        'data-toggle="tooltip" title="Seleccionar producto"><i class="fa fa-arrow-circle-right"></i></a>': ' '
-
-                }
+                dataSrc: ""
             },
-                ]
-            })
-            $('#mymodalproducto').modal('show');
-        });
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
+            },
+            columns: [
+                {"data": "nombre"},
+                {"data": "marca.nombre"},
+                {"data": "modelo.nombre"},
+                {"data": "stock"},
+                {"data": "id"},
 
-        $('#tbldetalle tbody').on('click', 'a[rel="select"]', function () {
+            ],
+            columnDefs: [
+
+                {
+                    targets: '_all',
+                    class: 'text-center',
+
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    width: '10%',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return row.stock >= 1 ? '<a style="color: white" type="button" class="btn btn-success btn-xs" rel="select" ' +
+                            'data-toggle="tooltip" title="Seleccionar producto"><i class="fa fa-arrow-circle-right"></i></a>' : ' '
+
+                    }
+                },
+            ]
+        });
+        $('#mymodalproducto').modal('show');
+    });
+
+    $('#tbldetalle tbody').on('click', 'a[rel="select"]', function () {
         var tr = tbldetalle.cell($(this).closest('td, li')).index();
         var data = tbldetalle.row(tr.row).data();
-       venta.add(data);
-       $('#mymodalproducto').modal('hide');
+        venta.add(data);
+        $('#mymodalproducto').modal('hide');
 
     });
 
@@ -253,22 +246,30 @@ $(function () {
     });
 
 
-
-     //buscar cliente
+    //buscar cliente
     $('select[name="cliente"]').select2({
         theme: "bootstrap4",
-        language: 'es',
+        language: {
+            inputTooShort: function () {
+                return "Ingresa al menos un caracter...";
+            },
+            "noResults": function () {
+                return "Sin resultados";
+            },
+            "searching": function () {
+                return "Buscando...";
+            }
+        },
         allowClear: true,
         ajax: {
             delay: 250,
             type: 'POST',
             url: window.location.pathname,
             data: function (params) {
-                var queryParameters = {
+                return {
                     term: params.term,
                     action: 'search_cliente'
-                }
-                return queryParameters;
+                };
             },
             processResults: function (data) {
                 return {

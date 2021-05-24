@@ -5,7 +5,7 @@ from app.estante.models import *
 
 
 class ubicacion(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, unique=True)
     area = models.ForeignKey(area, on_delete=models.PROTECT)
     estante = models.ForeignKey(estante, on_delete=models.PROTECT)
 
@@ -15,6 +15,8 @@ class ubicacion(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['full_name'] = self.nombre+' / '+self.area.nombre+' / ' + self.estante.nombre
+        item['area'] = self.area.toJSON()
+        item['estante'] = self.estante.toJSON()
         return item
 
     class Meta:

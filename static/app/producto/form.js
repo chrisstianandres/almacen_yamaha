@@ -1,75 +1,72 @@
 $(document).ready(function () {
     validar_stilo();
+    jQuery.validator.addMethod("prec", function (value, element) {
+        return value >= 0.5;
+    }, "algo");
+     jQuery.validator.addMethod("precio_venta", function (value, element) {
+        return value > $('#id_pvp').val();
+    }, "");
+
     $("#form").validate({
         rules: {
             nombre: {
                 required: true,
                 minlength: 3,
                 maxlength: 50,
-                lettersonly: true,
             },
 
             marca: {
                 required: true,
-                // minlength: 10,
-                //maxlength: 10,
-                //digits: true
             },
             modelo: {
                 required: true,
-                // minlength: 10,
-                //maxlength: 10,
-                //digits: true
             },
             descripcion: {
                 required: true,
-               // minlength: 10,
-                //maxlength: 10,
+                minlength: 5,
+                maxlength: 80,
                 //digits: true
             },
             pvp: {
                 required: true,
-               // minlength: 10,
-                //maxlength: 10,
-                //digits: true
+                prec: true
+            },
+            p_venta: {
+                required: true,
+                precio_venta: true
             },
 
         },
         messages: {
             nombre: {
-                required: "Porfavor ingresar un nombre para el cargo",
-                minlength: "Debe ingresar al menos tres letras de tu cargo",
-                lettersonly: "Debe ingresar unicamente letras y espacios"
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
+                maxlength: "Debe ingresar maximo 50 letras",
             },
             marca: {
-                required: "Porfavor escoja una marca",
-                //   minlength: "El suedo debe tener al menos  1 digito",
-                //digits: "Debe ingresar unicamente numeros",
-                // maxlength: "El sueldo maximo 5 digitos",
+                required: "Esta informacion es requerida",
             },
             modelo: {
-                required: "Porfavor escoja un modelo",
-                //   minlength: "El suedo debe tener al menos  1 digito",
-                //digits: "Debe ingresar unicamente numeros",
-                // maxlength: "El sueldo maximo 5 digitos",
+                required: "Esta informacion es requerida",
             },
             descripcion: {
-                required: "Porfavor realize una breve descripcion",
-                //   minlength: "El suedo debe tener al menos  1 digito",
-                //digits: "Debe ingresar unicamente numeros",
-                // maxlength: "El sueldo maximo 5 digitos",
+                required: "Esta informacion es requerida",
+                minlength: "Escribe al menos 5 caracteres ",
+                maxlength: "Maxmimo 80 caracteres",
             },
             pvp: {
-                required: "Porfavor el precio de venta",
-                //   minlength: "El suedo debe tener al menos  1 digito",
-                //digits: "Debe ingresar unicamente numeros",
-                // maxlength: "El sueldo maximo 5 digitos",
+                required: "Esta informacion es requerida",
+                prec: "Debe ingresar un valor de al menos 0.5 dolares"
+            },
+            p_venta: {
+                required: "Esta informacion es requerida",
+                precio_venta: "Debe ingresar un valor mayor al precio de compra"
             },
 
         },
     });
 
-       // agregar marca modal envento click boton
+    // agregar marca modal envento click boton
     $('#btnaddmarca').on('click', function () {
         //presentar modal de proveedor
         $('#mymodalmarca').modal('show');
@@ -91,7 +88,7 @@ $(document).ready(function () {
 
     });
 
-       // agregar modelo modal envento click boton
+    // agregar modelo modal envento click boton
     $('#btnaddmodelo').on('click', function () {
         //presentar modal de proveedor
         $('#mymodalmodelo').modal('show');
@@ -119,9 +116,12 @@ $(document).ready(function () {
         });
         $(this).val(changue);
     });
-    $('.select2').select2({
-        theme: "bootstrap4",
-        language: 'es'
+    $('#mymodalmarca').on('hidden.bs.modal', function (e) {
+        e.preventDefault();
+        reset('#formmarca');
     });
-
-});
+    $('#mymodalmodelo').on('hidden.bs.modal', function (e) {
+        e.preventDefault();
+        reset('#formmodelo');
+    });
+    });

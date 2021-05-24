@@ -17,6 +17,7 @@ $(function () {
         },
         columns: [
             {"data": "nombre"},
+            {"data": "tipo"},
             {"data": "id"},
 
         ],
@@ -39,7 +40,7 @@ $(function () {
         var tr = datatable.cell($(this).closest('td, li')).index();
         var data = datatable.row(tr.row).data();
         var parametros = {'id': data.id};
-        parametros['action'] = 'delete'
+        parametros['action'] = 'delete';
         submit_with_ajax_other(window.location.pathname, 'Alerta de Eliminacion!',
             'Esta seguro que desea borrar este tipo de gasto', parametros, function (){
             datatable.ajax.reload(null, false);

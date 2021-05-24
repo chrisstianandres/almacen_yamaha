@@ -18,7 +18,7 @@ $(function () {
         columns: [
             {"data": "fecha_compra"},
             {"data": "proveedor.nombres"},
-            {"data": "subtotal"},
+            {"data": "comprobante"},
             {"data": "total"},
             {"data": "estado"},
             {"data": "id"},
@@ -36,7 +36,11 @@ $(function () {
                 },
             },
             {
-                targets: [2, 3],
+                targets: [-4],
+                class: 'text-center'
+            },
+            {
+                targets: [3],
                 class: 'text-center',
                 render: function (data, type, row) {
                     return '$ ' + data;

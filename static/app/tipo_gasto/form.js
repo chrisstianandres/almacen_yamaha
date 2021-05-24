@@ -11,8 +11,8 @@ $(document).ready(function () {
         },
         messages: {
             nombre: {
-                required: "Porfavor ingresar un nombre para el tipo de gasto",
-                minlength: "Debe ingresar al menos tres letras de tu gasto",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
         },
@@ -29,18 +29,10 @@ $(document).ready(function () {
         },
         messages: {
             nombre: {
-                required: "Porfavor ingresar un nombre para el tipo de gasto",
-                minlength: "Debe ingresar al menos tres letras de tu gasto",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
         },
     });
-
-    $('#id_nombre').keyup(function () {
-        var changue = $(this).val().replace(/\b\w/g, function (l) {
-            return l.toUpperCase()
-        });
-        $(this).val(changue);
-    });
-
 });

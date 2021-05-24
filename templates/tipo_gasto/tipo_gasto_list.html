@@ -1,20 +1,16 @@
 {% extends 'bases/list.html' %}
 {% load static %}
 {% block table %}
-   <div class="card-header">
-        <a href="{{ nuevo }}" class="btn btn-primary btn-sm">
-            <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Registro
-        </a>
     <thead>
     <tr>
         <th>Nombre</th>
+        <th>Tipo</th>
         <th>Opciones</th>
     </tr>
     </thead>
     <tbody>
 
 </tbody>
-   </div>
 {% endblock %}
 {% block scripts_extra %}
     <script src="{% static 'app/tipo_gasto/list.js' %}"></script>

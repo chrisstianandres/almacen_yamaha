@@ -1,15 +1,11 @@
 {% extends 'bases/list.html' %}
 {% load static %}
 {% block table %}
-    <div class="card-header">
-    <a href="{{ nuevo }}" class="btn btn-primary btn-sm">
-        <i class="fa fa-plus" aria-hidden="true"></i> Nueva Compra
-    </a>
     <thead>
     <tr>
         <th>Fecha Compra</th>
         <th>Proveedor</th>
-        <th>Subtotal</th>
+        <th>Comprobante</th>
         <th>Total</th>
         <th>Estado</th>
         <th>Opciones</th>
@@ -21,7 +17,6 @@
     </tbody>
 {% endblock %}
 {% block java_scripts %}
-    </div>
     <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
          aria-hidden="true">
         <div class="modal-dialog  modal-lg" role="document">

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
@@ -9,6 +11,9 @@ from app.cliente.form import clienteForm
 from app.cliente.models import cliente
 from django.views.generic import *
 from app.mixin import usuariomixin
+
+year = [{'id': y, 'year': (datetime.now().year) - y} for y in range(0, 5)]
+
 
 class cliente_list(LoginRequiredMixin, usuariomixin, ListView):
     model = cliente
@@ -166,14 +171,17 @@ class report(LoginRequiredMixin, usuariomixin, ListView):
             data = []
             start_date = request.POST.get('start_date', '')
             end_date = request.POST.get('end_date', '')
+            key = request.POST.get('key', '')
             try:
-                if start_date == '' and end_date == '':
-                    query = cliente.objects.all()
-                else:
+                if key == '0' or key == '2':
                     query = cliente.objects.filter(fecha__range=[start_date, end_date])
-
+                elif key == '1':
+                    query = cliente.objects.filter(fecha__year=start_date, fecha__month=end_date)
+                else:
+                    query = cliente.objects.all()
                 for p in query:
                     data.append(p.toJSON())
+                # print(data)
             except:
                 pass
             return JsonResponse(data, safe=False)
@@ -182,5 +190,5 @@ class report(LoginRequiredMixin, usuariomixin, ListView):
         data = super().get_context_data(**kwargs)
         data['entidad'] = 'Clientes'
         data['title'] = 'Reporte de Clientes'
-
+        data['year'] = year
         return data

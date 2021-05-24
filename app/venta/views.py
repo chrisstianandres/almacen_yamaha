@@ -6,7 +6,7 @@ from django.contrib.staticfiles import finders
 from django.db import transaction
 from django.db.models import Sum, Q, Count
 from django.db.models.functions import Coalesce
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -16,13 +16,12 @@ from xhtml2pdf import pisa
 
 from app.cliente.form import clienteForm
 from app.devolucion.models import devolucion
-from app.empresa.models import empresa
 from app.inventario.models import inventario
-
+from app.mixin import usuariomixin
 from app.venta.form import ventaForm
 from app.venta.models import *
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from app.mixin import usuariomixin
+
+year = [{'id': y, 'year': (datetime.now().year) - y} for y in range(0, 5)]
 
 
 # Create your views here.
@@ -79,6 +78,7 @@ class venta_list(LoginRequiredMixin, usuariomixin, ListView):
         context['entidad'] = 'Venta'
         return context
 
+
 class venta_create(LoginRequiredMixin, usuariomixin, CreateView):
     model = venta
     form_class = ventaForm
@@ -106,7 +106,6 @@ class venta_create(LoginRequiredMixin, usuariomixin, CreateView):
                         item['value'] = i.nombre
                         data.append(item)
             elif action == 'add':
-                get = empresa.objects.first()
                 with transaction.atomic():
                     ventas = json.loads(request.POST['venta'])
                     c = venta()
@@ -123,7 +122,7 @@ class venta_create(LoginRequiredMixin, usuariomixin, CreateView):
                         det.cantidad = int(i['cantidad'])
                         det.subtotal = float(i['subtotal'])
                         # p = producto.objects.get(pk=i['id'])
-                        det.p_venta_actual = float(i['pvp'])
+                        det.p_venta_actual = float(i['p_venta'])
                         # p.stock -= int(i['cantidad'])
                         # p.save()
                         det.save()
@@ -259,13 +258,11 @@ class venta_report_total(LoginRequiredMixin, usuariomixin, ListView):
                 start_date = request.POST.get('start_date', '')
                 end_date = request.POST.get('end_date', '')
                 if start_date == '' and end_date == '':
-                    query = detalle_venta.objects.values('venta__fecha_venta', 'producto__nombre',
-                                                          'p_venta_actual'). \
+                    query = detalle_venta.objects.values('venta__fecha_venta', 'producto__nombre', 'p_venta_actual'). \
                         annotate(Sum('cantidad')).annotate(Sum('venta__total')).annotate(Sum('subtotal'))
 
                 else:
-                    query = (detalle_venta.objects.values('venta__fecha_venta', 'producto__nombre',
-                                                           'p_venta_actual').
+                    query = (detalle_venta.objects.values('venta__fecha_venta', 'producto__nombre', 'p_venta_actual').
                         filter(venta__fecha_venta__range=[start_date, end_date]).annotate(
                         Sum('cantidad'))).annotate(Sum('venta__total'))
                 for p in query:
@@ -279,24 +276,34 @@ class venta_report_total(LoginRequiredMixin, usuariomixin, ListView):
                 data = []
                 start_date = request.POST.get('start_date', '')
                 end_date = request.POST.get('end_date', '')
-                if start_date == '' and end_date == '':
-                    query = venta.objects.values('fecha_venta', 'cliente__nombres' ).\
-                        annotate(Sum('total')).annotate(Sum('subtotal')).annotate(Sum('iva'))
-                else:
-                    query = venta.objects.values('fecha_venta', 'cliente__nombres').filter(
-                        fecha_venta__range=[start_date, end_date]).\
-                        annotate(Sum('total')).annotate(Sum('subtotal')).annotate(Sum('iva'))
-                for p in query:
-                    data.append([
-                        p['fecha_venta'].strftime("%d/%m/%Y"),
-                        p['cliente__nombres'],
-                        format(p['subtotal__sum'], '.2f'),
-                        format(p['iva__sum'], '.2f'),
-                        format(p['total__sum'], '.2f'),
-                    ])
+                key = request.POST.get('key', '')
+                try:
+                    if key == '0' or key == '2':
+                        query = venta.objects.values('fecha_venta', 'cliente__nombres').filter(
+                            fecha_venta__range=[start_date, end_date]). \
+                            annotate(Sum('total')).annotate(Sum('subtotal')).annotate(Sum('iva'))
+                    elif key == '1':
+                        query = venta.objects.values('fecha_venta', 'cliente__nombres').filter(
+                            fecha_venta__year=start_date, fecha_venta__month=end_date). \
+                            annotate(Sum('total')).annotate(Sum('subtotal')).annotate(Sum('iva'))
+                    else:
+                        query = venta.objects.values('fecha_venta', 'cliente__nombres'). \
+                            annotate(Sum('total')).annotate(Sum('subtotal')).annotate(Sum('iva'))
+                    for p in query:
+                        data.append([
+                            p['fecha_venta'].strftime("%d/%m/%Y"),
+                            p['cliente__nombres'],
+                            format(p['subtotal__sum'], '.2f'),
+                            format(p['iva__sum'], '.2f'),
+                            format(p['total__sum'], '.2f'),
+                        ])
+                except:
+                    pass
+                return JsonResponse(data, safe=False)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
+            print(e)
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
@@ -304,4 +311,5 @@ class venta_report_total(LoginRequiredMixin, usuariomixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reporte de Ventas totales'
         context['entidad'] = 'Venta'
+        context['year'] = year
         return context

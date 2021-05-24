@@ -6,24 +6,22 @@ class proveedorForm(forms.ModelForm):
     # constructor
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        this_year = datetime.now().year
-        years = range(this_year - 15, this_year - 3)
         for field in self.Meta.fields:
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
             self.fields['razon_social'].widget = TextInput(
-                attrs={'placeholder': 'Ingrese el nombre de la Empresa', 'class': 'form-control form-rounded',
+                attrs={'placeholder': 'Ingrese una razon social', 'class': 'form-control form-rounded',
                        'autocomplete': 'off'})
             self.fields['nombres'].widget = TextInput(
-                attrs={'placeholder': 'Ingrese el nombre del cliente', 'class': 'form-control form-rounded','autocomplete': 'off'})
+                attrs={'placeholder': 'Ingrese el nombre del proveedor', 'class': 'form-control form-rounded', 'autocomplete': 'off'})
             self.fields['numero_doc'].widget = TextInput(
-                attrs={'placeholder': 'Ingrese numero de documento', 'class': 'form-control form-rounded','autocomplete': 'off'})
+                attrs={'placeholder': 'Ingrese numero de documento', 'class': 'form-control form-rounded', 'autocomplete': 'off'})
             self.fields['correo'].widget = EmailInput(
-                attrs={'placeholder': 'abc@correo.com', 'class': 'form-control form-rounded','autocomplete': 'off'})
-            self.fields['telefono'].widget.attrs['placeholder'] = 'Ingrese un numero de telefono'
+                attrs={'placeholder': 'abc@correo.com', 'class': 'form-control form-rounded', 'autocomplete': 'off'})
+            self.fields['telefono'].widget.attrs['placeholder'] = 'Ingrese un numero de celular'
             self.fields['direccion'].widget = TextInput(
-                attrs={'placeholder': 'Ingrese su direccion con maximo 50 caracteres', 'class': 'form-control form-rounded','autocomplete': 'off'})
+                attrs={'placeholder': 'Ingrese una direccion con maximo 50 caracteres', 'class': 'form-control form-rounded','autocomplete': 'off'})
 
         # habilitar, desabilitar, y mas
 
@@ -43,7 +41,7 @@ class proveedorForm(forms.ModelForm):
             'tipo_doc': 'Tipo Documento',
             'numero_doc': 'N° de Documento',
             'correo': 'Correo',
-            'telefono': 'Telefono',
+            'telefono': 'Celular',
             'direccion': 'Direccion'
 
         }

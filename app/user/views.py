@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import json
-from app.user.form import userForm, render, GroupForm
+from app.user.form import userForm, GroupForm
 from app.user.models import User
 from django.views.generic import *
 from django.contrib.auth.mixins import LoginRequiredMixin

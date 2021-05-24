@@ -18,11 +18,16 @@ $(document).ready(function () {
                 required: true,
                 minlength: 10,
                 maxlength: 10,
-                digits: true
+                digits: true,
+                validar: true
             },
             correo: {
                 required: true,
                 email: true
+            },
+            edad:{
+                required: true,
+                mayoredad: true
             },
             telefono: {
                 required: true,
@@ -38,30 +43,34 @@ $(document).ready(function () {
         },
         messages: {
             nombres: {
-                required: "Porfavor ingresa tus nombres",
-                minlength: "Debe ingresar al menos tres letras de tu nombre",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
             apellidos: {
-                required: "Porfavor ingresa tus apellidos",
-                minlength: "Debe ingresar al menos un apellido",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
+            edad:{
+                required: 'La edad es requerida'
+            },
             cedula: {
-                required: "Porfavor ingrese un numero de cedula valido",
-                minlength: "Tu numero de documento debe tener al menos 10 digitos",
+                required: "Esta informacion es requerida",
+                minlength: "Tu numero de cedula debe tener al menos 10 digitos",
                 digits: "Debe ingresar unicamente numeros",
-                maxlength: "Tu numero de documento debe tener maximo 10 digitos",
+                maxlength: "Tu numero de cedula debe tener maximo 10 digitos",
+                validar: "Numero de cedula no valido"
             },
             correo: "Debe ingresar un correo valido",
             telefono: {
-                required: "Porfavor ingresa tu numero celular",
-                minlength: "Tu numero de documento debe tener al menos 10 digitos",
+                required: "Esta informacion es requerida",
+                minlength: "Tu numero de celular debe tener al menos 10 digitos",
                 digits: "Debe ingresar unicamente numeros",
-                maxlength: "Tu numero de documento debe tener maximo 10 digitos",
+                maxlength: "Tu numero de celular debe tener maximo 10 digitos",
             },
             direccion: {
-                required: "Porfavor ingresa una direccion",
+                required: "Esta informacion es requerida",
                 minlength: "Ingresa al menos 5 letras",
                 maxlength: "Tu direccion debe tener maximo 50 caracteres",
             },
@@ -73,19 +82,39 @@ $(document).ready(function () {
             return l.toUpperCase()
         });
         $(this).val(changue);
-    });
-    $('#id_aoellidos').keyup(function () {
+    }).keypress(function (e) {
+            if (e.which >= 48 && e.which <= 57) {
+                return false;
+            }
+        });  //Para solo letras
+    $('#id_apellidos').keyup(function () {
         var changue = $(this).val().replace(/\b\w/g, function (l) {
             return l.toUpperCase()
         });
         $(this).val(changue);
-    });
-    $('#id_direccion').keyup(function () {
-        var changue = $(this).val().replace(/\b\w/g, function (l) {
-            return l.toUpperCase()
-        });
-        $(this).val(changue);
-    });
+    }).keypress(function (e) {
+            if (e.which >= 48 && e.which <= 57) {
+                return false;
+            }
+        });  //Para solo letras
+
+    $('#id_cedula').keypress(function (e) {
+        if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });//Para solo numeros
+    $('#id_telefono').keypress(function (e) {
+        if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });//Para solo numeros
+
+    $('#id_edad').keypress(function (e) {
+        if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });//Para solo numeros
+
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'

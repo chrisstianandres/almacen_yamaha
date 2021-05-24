@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -68,6 +69,13 @@ class marca_create(LoginRequiredMixin,usuariomixin,CreateView):
                 form = self.form_class(request.POST)
                 if form.is_valid():
                     form.save()
+                else:
+                    data['title'] = 'Registro de Marca'
+                    data['url'] = reverse_lazy('marca:lista')
+                    data['entidad'] = 'Marca'
+                    data['action'] = 'add'
+                    data['form'] = form
+                    return render(request, 'marca/marca_form.html', data)
                 return HttpResponseRedirect(self.success_url)
             elif action == 'add_marca':
                 form = self.form_class(request.POST)

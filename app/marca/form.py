@@ -2,6 +2,8 @@ from django import forms
 from datetime import *
 from django.forms import SelectDateWidget, TextInput, NumberInput, EmailInput
 from .models import marca
+
+
 class marcaForm(forms.ModelForm):
     # constructor
     def __init__(self, *args, **kwargs):
@@ -13,7 +15,10 @@ class marcaForm(forms.ModelForm):
                 'class': 'form-control'
             })
             self.fields['nombre'].widget = TextInput(
-                attrs={'placeholder': 'Ingrese el nombre de la marca', 'class': 'form-control form-rounded','autocomplete': 'off'})
+                attrs={'placeholder': 'Ingrese el nombre de la marca',
+                       'class': 'form-control form-rounded',
+                       'id': 'id_nombre_marca',
+                       'autocomplete': 'off'})
 
         # habilitar, desabilitar, y mas
 

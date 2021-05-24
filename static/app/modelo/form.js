@@ -11,8 +11,8 @@ $(document).ready(function () {
         },
         messages: {
             nombre: {
-                required: "Porfavor ingresar un nombre para el cargo",
-                minlength: "Debe ingresar al menos tres letras de tu cargo",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos tres letras del modelo",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
         },
         messages: {
             nombre: {
-                required: "Porfavor ingresar un nombre para el modelo",
+                required: "Esta informacion es requerida",
                 minlength: "Debe ingresar al menos tres letras del modelo",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },

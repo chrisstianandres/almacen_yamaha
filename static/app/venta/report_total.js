@@ -1,19 +1,27 @@
 var datatable;
+var year = $('#year').val();
 var datos = {
     fechas: {
-        'start_date': '',
-        'end_date': '',
-        'action': 'report_total'
+        //picker['start_date'] = year + '-01-01';
+        //         picker['end_date'] = year + '-12-31';
+        'start_date': year + '-01-01',
+        'end_date': year + '-12-31',
+        'action': 'report_total',
+        'key': 0
     },
     add: function (data) {
-        if (data.key === 1) {
+        this.fechas['key'] = data.key;
+        if (data.key === 0 || data.key === 1) {
+            this.fechas['start_date'] = data.start_date;
+            this.fechas['end_date'] = data.end_date;
+        } else if (data.key === 2) {
             this.fechas['start_date'] = data.startDate.format('YYYY-MM-DD');
             this.fechas['end_date'] = data.endDate.format('YYYY-MM-DD');
         } else {
             this.fechas['start_date'] = '';
-            this.fechas['end_date'] = '';
+            this.fechas['end_date'] = ''
         }
-
+        console.log(data);
         $.ajax({
             url: window.location.pathname,
             type: 'POST',
@@ -27,7 +35,6 @@ var datos = {
     },
 };
 $(function () {
-    daterange();
     datatable = $('#example1').DataTable({
         responsive: true,
         autoWidth: false,
@@ -36,9 +43,7 @@ $(function () {
         ajax: {
             url: window.location.pathname,
             type: 'POST',
-            data: {
-                'action': 'report_total',
-            },
+            data: datos.fechas,
             dataSrc: ""
         },
         language: {
@@ -112,8 +117,8 @@ $(function () {
                             return {
                                 columns: [
                                     {
-                                         alignment: 'left',
-                                         text: ['Reporte creado el: ', {text: jsDate.toString()}]
+                                        alignment: 'left',
+                                        text: ['Reporte creado el: ', {text: jsDate.toString()}]
                                     },
                                     {
                                         alignment: 'right',
@@ -154,13 +159,13 @@ $(function () {
                 // },
             ],
         },
-        footerCallback: function (row, data, start, end, display) {
+        footerCallback: function (row, start, end, display) {
             var api = this.api(), data;
 
             // Remove the formatting to get integer data for summation
             var intVal = function (i) {
                 return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '') * 1 :
+                    i.replace(/[$,]/g, '') * 1 :
                     typeof i === 'number' ?
                         i : 0;
             };
@@ -215,25 +220,67 @@ $(function () {
             );
         },
     });
+    $('#search').on('change', function () {
+        daterange();
+        if ($(this).val() === '0') {
+            $('#year_seccion').show();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
+
+        } else if ($(this).val() === '1') {
+            $('#year_seccion').show();
+            $('#range_date').hide();
+            $('#month_seccion').show();
+        } else if ($(this).val() === '2') {
+            $('#year_seccion').hide();
+            $('#range_date').show();
+            $('#month_seccion').hide();
+        } else {
+            $('#year_seccion').hide();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
+        }
+    });
+    $('#year').on('change', function () {
+        daterange()
+    });
+    $('#month').on('change', function () {
+        daterange()
+    });
+    $('#fecha').on('apply.daterangepicker', function (ev, picker) {
+        picker['key'] = 2;
+        datos.add(picker);
+    });
 
 });
 
 function daterange() {
+    year = $('#year').val();
     // $("div.toolbar").html('<br><div class="col-lg-3"><input type="text" name="fecha" class="form-control form-control-sm input-sm"></div> <br>');
-    $('input[name="fecha"]').daterangepicker({
-        locale: {
-            format: 'YYYY-MM-DD',
-            applyLabel: '<i class="fas fa-search"></i> Buscar',
-            cancelLabel: '<i class="fas fa-times"></i> Cancelar',
-        }
-    }).on('apply.daterangepicker', function (ev, picker) {
-        picker['key'] = 1;
-        datos.add(picker);
-        // filter_by_date();
-
-    }).on('cancel.daterangepicker', function (ev, picker) {
+    var picker = {};
+    var search = $('#search').val();
+    console.log(search);
+    if (search === '0') {
         picker['key'] = 0;
+        picker['start_date'] = year + '-01-01';
+        picker['end_date'] = year + '-12-31';
         datos.add(picker);
-    });
-
+    } else if (search === '1') {
+        picker['key'] = 1;
+        picker['start_date'] = year;
+        picker['end_date'] = $('#month').val();
+        datos.add(picker);
+    } else if (search === '2') {
+        $('input[name="fecha"]').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: '<i class="fas fa-search"></i> Buscar',
+                cancelLabel: '<i class="fas fa-times"></i> Cancelar',
+            },
+            showDropdowns: true,
+        });
+    } else {
+        picker['key'] = 3;
+        datos.add(picker);
+    }
 }

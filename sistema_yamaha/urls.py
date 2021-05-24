@@ -29,7 +29,10 @@ urlpatterns = [
     path('login/', include('app.login.url'), name='login'),
     path('', views.menu, name='index'),
     path('empresa/', include('app.empresa.url', namespace='empresa')),
-    path('cliente/', include('app.cliente.url')),
+    path('cliente/', include('app.cliente.url', namespace='cliente')),
+    path('area/', include('app.area.urls', namespace='area')),
+    path('ubicacion/', include('app.ubicacion.url', namespace='ubicacion')),
+    path('estante/', include('app.estante.urls', namespace='estante')),
     path('cargo/', include('app.cargo.url', namespace='cargo')),
     path('empleado/', include('app.empleado.url', namespace='empleado')),
     path('marca/', include('app.marca.url', namespace='marca')),
@@ -44,7 +47,5 @@ urlpatterns = [
     path('usuario/', include('app.user.url', namespace='user')),
     path('devolucion/', include('app.devolucion.url', namespace='devolucion')),
     path('dashbord/', include('app.dashbord.url', namespace='dashbord'))
-
 ]
-
-urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

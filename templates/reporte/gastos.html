@@ -2,31 +2,85 @@
 {% load static %}
 {% block head_extra %}
     <link rel="stylesheet" type="text/css" href="{% static 'lib/daterangepicker/daterangepicker.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'lib/datatables/Buttons-1.6.5/css/buttons.bootstrap4.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'lib/datatables/Buttons-1.6.5/css/buttons.bootstrap4.css' %}"/>
+{% endblock %}
+{% block boton_nuevo %}
+
 {% endblock %}
 {% block table %}
+    <div class="row">
+        <div class="col-lg-4">
+            <label for="search">Buscar por:</label>
+            <select name="search" id="search" class="form-control select2">
+                <option value="0">Año</option>
+                <option value="1">Mes</option>
+                <option value="2">Intervalo</option>
+                <option value="4">Tipo</option>
+                <option value="3">Todos</option>
+            </select>
 
-    <div class="col-lg-4">
-        <div class="form-group">
-            <div class="card-header">
-                <label> Filtro de Fecha:</label>
-                <input type="text" name="fecha" id="fecha" class="form-control form-control-sm input-sm">
-            </div>
+        </div>
+
+        <div class="col-lg-4" id="year_seccion">
+            <label for="year">Año:</label>
+            <select name="year" id="year" class="form-control select2">
+                {% for y in year %}
+                    <option value="{{ y.year }}">{{ y.year }}</option>
+                {% endfor %}
+
+            </select>
+        </div>
+        <div class="col-lg-4" id="month_seccion" style="display: none">
+            <label for="month">Mes:</label>
+            <select name="month" id="month" class="form-control select2">
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+            </select>
+        </div>
+        <div class="col-lg-4" id="tipo_seccion" style="display: none">
+            <label for="tipo">Mes:</label>
+            <select name="tipo" id="tipo" class="form-control select2">
+                <option value="0">Variable</option>
+                <option value="1">Fijo</option>
+            </select>
+        </div>
+        <div class="col-lg-4" id="range_date" style="display: none">
+            <label for="fecha"><strong>Rango de Fechas:</strong></label>
+            <input type="text" name="fecha" id="fecha" class="form-control form-control-sm input-sm">
         </div>
     </div>
-
     <hr>
     <thead>
     <tr>
         <th>Fecha Registro</th>
-        <th>Tipo de Gasto</th>
+        <th>Gasto</th>
+        <th>Tipo</th>
         <th>Detalle</th>
         <th>Valor</th>
     </tr>
     </thead>
     <tbody>
-
     </tbody>
+    <tfoot>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>Total: </th>
+        <th></th>
+    </tr>
+    </tfoot>
 
 {% endblock %}
 {% block scripts_extra %}

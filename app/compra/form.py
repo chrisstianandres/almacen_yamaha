@@ -28,13 +28,8 @@ class compraForm(ModelForm):
                                             }),
 
 
-            'subtotal': TextInput(attrs={
-                'readonly': True,
-                'class': 'form-control',
-                'sytle': 'with 100%',
-
-            }),
-            'iva': TextInput(attrs={
+            'comprobante': TextInput(attrs={
+                'placeholder': 'N° de Comprobante',
                 'class': 'form-control',
                 'sytle': 'with 100%',
 

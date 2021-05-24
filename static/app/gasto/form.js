@@ -5,25 +5,22 @@ $(document).ready(function () {
             detalle: {
                 required: true,
                 minlength: 3,
-                maxlength: 50,
-                lettersonly: true,
+                maxlength: 50
             },
 
             valor: {
                 required: true,
-
             },
         },
         messages: {
             detalle: {
-                required: "Porfavor ingrese un detalle para el gasto",
-                minlength: "Debe ingresar al menos tres letras de tu gasto",
-                lettersonly: "Debe ingresar unicamente letras y espacios"
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
             },
         },
     });
 
-       // agregar marca modal envento click boton
+    // agregar marca modal envento click boton
     $('#btnaddtipogasto').on('click', function () {
         //presentar modal de proveedor
         $('#mymodaltipogasto').modal('show');
@@ -45,52 +42,50 @@ $(document).ready(function () {
 
     });
 
-
-    $('#id_detalle').keyup(function () {
-        var changue = $(this).val().replace(/\b\w/g, function (l) {
-            return l.toUpperCase()
-        });
-        $(this).val(changue);
-    });
-    $('.select2').select2({
-        theme: "bootstrap4",
-        language: 'es'
-    });
-
-    $('#fecha').datetimepicker({
-        format: 'YYYY-MM-DD',
-        date: moment().format("YYYY-MM-DD"),
-        locale: 'es',
-        maxDate: moment().format("YYYY-MM-DD"),
-        minDate: moment().format("YYYY-MM-DD"),
-
-    });
-
-     //buscar tipo de gasto
-    $('select[name="tipo_gasto"]').select2({
-        theme: "bootstrap4",
-        language: 'es',
-        allowClear: true,
-        ajax: {
-            delay: 250,
-            type: 'POST',
-            url: window.location.pathname,
-            data: function (params) {
-                var queryParameters = {
-                    term: params.term,
-                    action: 'search_tipo_gasto'
-                }
-                return queryParameters;
-            },
-            processResults: function (data) {
-                return {
-                    results: data
-
-                };
-            },
-        },
-        placeholder: 'Ingrese una descripción',
-        minimumInputLength: 1,
-    });
+$('#fecha').datetimepicker({
+    format: 'YYYY-MM-DD',
+    date: moment().format("YYYY-MM-DD"),
+    locale: 'es',
+    maxDate: moment().format("YYYY-MM-DD"),
+    minDate: moment().format("YYYY-MM-DD"),
 
 });
+
+//buscar tipo de gasto
+$('select[name="tipo_gasto"]').select2({
+    theme: "bootstrap4",
+    language: {
+            inputTooShort: function () {
+                return "Ingresa al menos un caracter...";
+            },
+            "noResults": function () {
+                return "Sin resultados";
+            },
+            "searching": function () {
+                return "Buscando...";
+            }
+        },
+    allowClear: true,
+    ajax: {
+        delay: 250,
+        type: 'POST',
+        url: window.location.pathname,
+        data: function (params) {
+            return {
+                term: params.term,
+                action: 'search_tipo_gasto'
+            };
+        },
+        processResults: function (data) {
+            console.log(data);
+            return {
+                results: data
+            };
+        },
+    },
+    placeholder: 'Ingrese una descripción',
+    minimumInputLength: 1,
+});
+
+})
+;

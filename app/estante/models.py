@@ -3,7 +3,7 @@ from django.forms import model_to_dict
 
 
 class estante(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return '%s' % self.nombre

@@ -6,9 +6,8 @@ SEXO = (
     (1, 'Masculino'),
     (0, 'Femenino'),
 )
-from django.shortcuts import render
 
-# Create your views here.
+
 class User(AbstractUser):
     cedula = models.CharField(max_length=10, unique=True, null=True)
     telefono = models.CharField(max_length=10, unique=True, null=True)

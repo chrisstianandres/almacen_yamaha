@@ -17,7 +17,7 @@ def menu(request):
     data = {
         'title': 'Menu Principal', 'entidad': 'Menu Principal', 'logo': logo, 'productos': producto.objects.all()[0:7]
     }
-    return render(request, '../../sistema_yamaha/templates/index.html', data)
+    return render(request, 'index.html', data)
     # return render(request, 'bases/base.html', data)
 
 

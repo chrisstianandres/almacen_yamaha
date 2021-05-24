@@ -25,8 +25,9 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
 
-
 # Create your views here.
+from app.ubicacion.models import ubicacion
+
 
 class compra_list(LoginRequiredMixin, usuariomixin, ListView):
     model = compra
@@ -81,10 +82,16 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
             action = request.POST['action']
             if action == 'search_products':
                 data = []
-                prods = producto.objects.filter(nombre__icontains=request.POST['term'])[0:10]
+                ids = json.loads(request.POST['ids'])
+                prods = producto.objects.filter(nombre__icontains=request.POST['term']).exclude(id__in=ids)[0:10]
                 for i in prods:
                     item = i.toJSON()
-                    item['value'] = i.nombre
+                    item['value'] = i.nombre_full()
+                    if ubicacion.objects.all():
+                        item['ubicacion'] = [
+                            {'id': u.id, 'nombre': str(u.nombre + ' / ' + u.area.nombre + ' / ' + u.estante.nombre)}
+                            for u in ubicacion.objects.all()]
+                        item['ubicacion_id'] = ubicacion.objects.first().id
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
@@ -92,8 +99,7 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
                     c = compra()
                     c.fecha_compra = compras['fecha_compra']
                     c.proveedor_id = compras['proveedor']
-                    c.subtotal = float(compras['subtotal'])
-                    c.iva = float(compras['iva'])
+                    c.comprobante = compras['comprobante']
                     c.total = float(compras['total'])
                     c.save()
                     for i in compras['producto']:
@@ -106,11 +112,15 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
                         p.stock += int(i['cantidad'])
                         p.save()
                         det.save()
-                        # for a in range(0, i['cantidad']):
-                        #     inv = inventario()
-                        #     inv.compra_id = c.id
-                        #     inv.producto_id = int(i['id'])
-                        #     inv.save()
+                        for cant in range(0, i['cantidad']):
+                            inv = inventario()
+                            inv.compra_id = c.id
+                            inv.producto_id = int(i['id'])
+                            inv.ubicacion_id = int(i['ubicacion_id'])
+                            inv.save()
+                        comp = compra.objects.get(id=c.id)
+                        comp.inventario_estado = 1
+                        comp.save()
             elif action == 'search_proveedor':
                 data = []
                 term = request.POST['term']
@@ -125,11 +135,20 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
                 data = frm.save()
             elif action == 'detalle':
                 data = []
-                for i in producto.objects.all():
-                    data.append(i.toJSON())
+                prods = producto.objects.all()
+                ids = json.loads(request.POST['ids'])
+                for i in prods.exclude(id__in=ids):
+                    item = i.toJSON()
+                    if ubicacion.objects.all():
+                        item['ubicacion'] = [
+                            {'id': u.id, 'nombre': str(u.nombre + ' / ' + u.area.nombre + ' / ' + u.estante.nombre)}
+                            for u in ubicacion.objects.all()]
+                        item['ubicacion_id'] = ubicacion.objects.first().id
+                    data.append(item)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
+            print(e)
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 

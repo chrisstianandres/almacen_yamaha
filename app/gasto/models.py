@@ -11,11 +11,11 @@ class gasto(models.Model):
     #empresa = models.ForeignKey(empresa, on_delete=models.PROTECT)
     tipo_gasto = models.ForeignKey(tipo_gasto, on_delete=models.PROTECT)
     fecha = models.DateField(default=datetime.now)
-    valor = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    valor = models.DecimalField(default=1.00, max_digits=9, decimal_places=2)
     detalle = models.CharField(max_length=50)
 
     def __str__(self):
-        return '%s' % self.tipo_gasto.nombre
+        return '{} - Gasto: {}'.format(self.tipo_gasto.nombre, self.tipo_gasto.get_tipo_display())
 
     def toJSON(self):
         item = model_to_dict(self)

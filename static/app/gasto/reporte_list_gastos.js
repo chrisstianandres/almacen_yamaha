@@ -1,19 +1,40 @@
-var date_range = null;
-var date_now = new moment().format('YYYY-MM-DD');
-
-function generate_report() {
-    var parameters = {
+var datatable;
+var year = $('#year').val();
+var datos = {
+    fechas: {
+        //picker['start_date'] = year + '-01-01';
+        //         picker['end_date'] = year + '-12-31';
+        'start_date': year + '-01-01',
+        'end_date': year + '-12-31',
         'action': 'report',
-        'start_date': date_now,
-        'end_date': date_now,
-    };
+        'key': 0
+    },
+    add: function (data) {
+        this.fechas['key'] = data.key;
+        if (data.key === 0 || data.key === 1 || data.key === 4) {
+            this.fechas['start_date'] = data.start_date;
+            this.fechas['end_date'] = data.end_date;
+        } else if (data.key === 2) {
+            this.fechas['start_date'] = data.startDate.format('YYYY-MM-DD');
+            this.fechas['end_date'] = data.endDate.format('YYYY-MM-DD');
+        } else {
+            this.fechas['start_date'] = '';
+            this.fechas['end_date'] = ''
+        }
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: this.fechas,
+            success: function (data) {
+                datatable.clear();
+                datatable.rows.add(data).draw();
+            }
+        });
 
-    if (date_range !== null) {
-        parameters['start_date'] = date_range.startDate.format('YYYY-MM-DD');
-        parameters['end_date'] = date_range.endDate.format('YYYY-MM-DD');
-    }
-
-    $('#example1').DataTable({
+    },
+};
+$(function () {
+    datatable = $('#example1').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -21,17 +42,12 @@ function generate_report() {
         ajax: {
             url: window.location.pathname,
             type: 'POST',
-            data: parameters,
+            data: datos.fechas,
             dataSrc: ""
         },
         language: {
             url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
         },
-        order: false,
-        paging: false,
-        ordering: false,
-        info: false,
-        searching: false,
         dom: 'Bfrtip',
         buttons: [
             {
@@ -42,7 +58,7 @@ function generate_report() {
                 pageSize: 'A4', //A3 , A5 , A6 , legal , letter
                 download: 'open',
                 exportOptions: {
-                    columns: [0, 1, 2, 3],
+                    columns: [0, 1, 2, 3, 4],
                     search: 'applied',
                     order: 'applied'
                 },
@@ -122,41 +138,116 @@ function generate_report() {
                 }
             },
         ],
-        columns: [
-            {"data": "fecha"},
-            {"data": "tipo_gasto.nombre"},
-            {"data": "detalle"},
-            {"data": "valor"},
-
-        ],
         columnDefs: [
             {
                 targets: '_all',
                 class: 'text-center',
             },
+            {
+                targets: [-1],
+                 class: 'text-center',
+                render: function (data, type, row) {
+                    return '$ '+data;
+                }
+            }
         ],
-        initComplete: function (settings, json) {
+       footerCallback: function (row, start, end, display) {
+            var api = this.api(), data;
 
+            // Remove the formatting to get integer data for summation
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+            // Total over this page
+            pageTotalsiniva = api
+                .column(4, {page: 'current'})
+                .data()
+                .reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+            // Update footer
+            $(api.column(4).footer()).html('$ '+ parseFloat(pageTotalsiniva).toFixed(2));
+        },
+    });
+    $('#search').on('change', function () {
+        daterange();
+        if ($(this).val() === '0') {
+            $('#year_seccion').show();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
+            $('#tipo_seccion').hide();
+        } else if ($(this).val() === '1') {
+            $('#year_seccion').show();
+            $('#range_date').hide();
+            $('#month_seccion').show();
+            $('#tipo_seccion').hide();
+        } else if ($(this).val() === '2') {
+            $('#year_seccion').hide();
+            $('#range_date').show();
+            $('#month_seccion').hide();
+            $('#tipo_seccion').hide();
+        } else if ($(this).val() === '4') {
+            $('#year_seccion').hide();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
+            $('#tipo_seccion').show();
+        } else {
+            $('#year_seccion').hide();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
+            $('#tipo_seccion').hide();
         }
     });
-}
-
-$(function () {
-    $('input[name="fecha"]').daterangepicker({
-        locale: {
-            format: 'YYYY-MM-DD',
-            applyLabel: '<i class="fas fa-chart-pie"></i> Aplicar',
-            cancelLabel: '<i class="fas fa-times"></i> Cancelar',
-        }
-    }).on('apply.daterangepicker', function (ev, picker) {
-        date_range = picker;
-        generate_report();
-    }).on('cancel.daterangepicker', function (ev, picker) {
-        $(this).data('daterangepicker').setStartDate(date_now);
-        $(this).data('daterangepicker').setEndDate(date_now);
-        date_range = picker;
-        generate_report();
+    $('#year').on('change', function () {
+        daterange()
+    });
+    $('#month').on('change', function () {
+        daterange()
+    });
+    $('#fecha').on('apply.daterangepicker', function (ev, picker) {
+        picker['key'] = 2;
+        datos.add(picker);
+    });
+    $('#tipo').on('change', function () {
+        daterange()
     });
 
-    generate_report();
 });
+
+function daterange() {
+    year = $('#year').val();
+    // $("div.toolbar").html('<br><div class="col-lg-3"><input type="text" name="fecha" class="form-control form-control-sm input-sm"></div> <br>');
+    var picker = {};
+    var search = $('#search').val();
+    if (search === '0') {
+        picker['key'] = 0;
+        picker['start_date'] = year + '-01-01';
+        picker['end_date'] = year + '-12-31';
+        datos.add(picker);
+    } else if (search === '1') {
+        picker['key'] = 1;
+        picker['start_date'] = year;
+        picker['end_date'] = $('#month').val();
+        datos.add(picker);
+    } else if (search === '2') {
+        $('input[name="fecha"]').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: '<i class="fas fa-search"></i> Buscar',
+                cancelLabel: '<i class="fas fa-times"></i> Cancelar',
+            },
+            showDropdowns: true,
+        });
+    } else if (search === '4') {
+        picker['key'] = 4;
+        picker['start_date'] = $('#tipo').val();
+        picker['end_date'] = '';
+        datos.add(picker);
+    } else {
+        picker['key'] = 3;
+        datos.add(picker);
+    }
+}

@@ -1,10 +1,11 @@
-var datatable;
+var datatable, tbldetalle;
 var compras = {
     items: {
         proveedor: '',
         cantidad: '',
         pvp: '',
         fecha_compra: '',
+        comprobante: '',
         subtotal: 0.00,
         iva: 0.00,
         total: 0.00,
@@ -12,10 +13,16 @@ var compras = {
         producto: []
 
     },
+    get_ids: function () {
+        var ids = [];
+        $.each(this.items.producto, function (key, value) {
+            ids.push(value.id);
+        });
+        return ids;
+    },
     //agregar los productos
     add: function (item) {
         this.items.producto.push(item);
-        this.items.producto = this.exclude_duplicados(this.items.producto);
         this.list();
     },
     //calcular
@@ -25,11 +32,7 @@ var compras = {
             dict.subtotal = dict.cantidad * parseFloat(dict.pvp);
             subtotal += dict.subtotal;
         });
-        this.items.subtotal = subtotal;
-        this.items.iva = this.items.subtotal * 0.12;
-        this.items.total = this.items.subtotal + this.items.iva;
-        $('input[name="subtotal"]').val(this.items.subtotal.toFixed(2));
-        $('input[name="iva"]').val(this.items.iva.toFixed(2));
+        this.items.total = subtotal;
         $('input[name="total"]').val(this.items.total.toFixed(2));
     },
     list: function () {
@@ -42,9 +45,8 @@ var compras = {
             data: this.items.producto,
             columns: [
                 {"data": "id"},
-                {"data": "nombre"},
-                {"data": "marca.nombre"},
-                {"data": "modelo.nombre"},
+                {"data": "nombre_full"},
+                {"data": "id"},
                 {"data": "cantidad"},
                 {"data": "pvp"},
                 {"data": "subtotal"},
@@ -58,7 +60,22 @@ var compras = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
+                        console.log(row);
                         return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white"><i class="fas fa-trash-alt"></i></a>';
+                    }
+                },
+                {
+                    targets: [2],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var select = '<select name="ubicacion" class="form-control select2">';
+                            $.each(row.ubicacion, function (key, value) {
+                                select += '<option value="'+value.id+'">'+value.nombre+'';
+                            });
+                            select += '</select>';
+
+                        return select
                     }
                 },
                 {
@@ -91,7 +108,11 @@ var compras = {
                     min: 1,
                     max: 1000000000,
                     step: 1
-                });
+                }).keypress(function (e) {
+                    if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+                        return false;
+                    }
+                });//Para solo numeros
             }
         });
     },
@@ -105,10 +126,6 @@ var compras = {
 };
 $(function () {
     compras.list();
-    $('.select2').select2({
-        theme: "bootstrap4",
-        language: 'es'
-    });
 
     $('#fecha_compra').datetimepicker({
         format: 'YYYY-MM-DD',
@@ -131,26 +148,22 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'search_products',
-                    'term': request.term
+                    'term': request.term,
+                    'ids': JSON.stringify(compras.get_ids())
                 },
                 dataType: 'json',
             }).done(function (data) {
-                console.log(data);
                 response(data);
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                //alert(textStatus + ': ' + errorThrown);
-            }).always(function (data) {
-
+                menssaje_error(textStatus, errorThrown)
             });
         },
         delay: 500,
         minLength: 1,
         select: function (event, ui) {
             event.preventDefault();
-            console.clear();
             ui.item.cant = 1;
             ui.item.subtotal = 0.00;
-            console.log(compras.items);
             compras.add(ui.item);
             $(this).val('');
         }
@@ -163,42 +176,59 @@ $(function () {
     });
 
     $('#buscar_producto').on('click', function () {
-            $('#tbldetalle').DataTable({
-                responsive: true,
-                autoWidth: false,
-                destroy: true,
-                deferRender: true,
-                ajax: {
-                    url: window.location.pathname,
-                    type: 'POST',
-                    data: {
-                        'action': 'detalle',
-                        //'id': data.id
-                    },
-                    dataSrc: ""
+        tbldetalle = $('#tbldetalle').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'detalle',
+                    'ids': JSON.stringify(compras.get_ids())
                 },
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
+                dataSrc: ""
+            },
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
+            },
+            columns: [
+                {"data": "nombre"},
+                {"data": "marca.nombre"},
+                {"data": "modelo.nombre"},
+                {"data": "id"},
+                //{"data": "subtotal"},
+
+            ],
+            columnDefs: [
+                {
+                    targets: '_all',
+                    class: 'text-center',
+
                 },
-                columns: [
-                    {"data": "nombre"},
-                    //{"data": "producto.marca"},
-                    //{"data": "producto.modelo"},
-                    {"data": "stock"},
-                    //{"data": "subtotal"},
-
-                ],
-                columnDefs: [
-
-                    {
-                        targets: '_all',
-                        class: 'text-center',
-
-                    },
-                ]
-            })
-            $('#mymodalproducto').modal('show');
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    width: '10%',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<a style="color: white" type="button" class="btn btn-success btn-xs" rel="select" ' +
+                            'data-toggle="tooltip" title="Seleccionar producto"><i class="fa fa-arrow-circle-right"></i></a>';
+                    }
+                },
+            ]
         });
+        $('#mymodalproducto').modal('show');
+    });
+
+    $('#tbldetalle tbody').on('click', 'a[rel="select"]', function () {
+        var tr = tbldetalle.cell($(this).closest('td, li')).index();
+        var data = tbldetalle.row(tr.row).data();
+        compras.add(data);
+        $('#mymodalproducto').modal('hide');
+
+    });
 
     $('#formproveedor').on('submit', function (e) {
         e.preventDefault();
@@ -226,11 +256,10 @@ $(function () {
             type: 'POST',
             url: window.location.pathname,
             data: function (params) {
-                var queryParameters = {
+                return {
                     term: params.term,
                     action: 'search_proveedor'
-                }
-                return queryParameters;
+                };
             },
             processResults: function (data) {
                 return {
@@ -272,17 +301,21 @@ $(function () {
             var tr = datatable.cell($(this).closest('td, li')).index();
             compras.items.producto[tr.row].cantidad = cantidad;
             compras.calculate();
-            $('td:eq(6)', datatable.row(tr.row).node()).html('$' + compras.items.producto[tr.row].subtotal.toFixed(2));
+            $('td:eq(5)', datatable.row(tr.row).node()).html('$' + compras.items.producto[tr.row].subtotal.toFixed(2));
         });
     $('#save').on('click', function () {
         if ($('select[name="proveedor"]').val() === "") {
             menssaje_error('Error!', "Debe seleccionar un proveedor", 'far fa-times-circle');
+            return false
+        } else if ($('input[name="comprobante"]').val() === "") {
+            menssaje_error('Error!', "Debe ingresar un numero de comprobante", 'far fa-times-circle');
             return false
         } else if (compras.items.producto.length === 0) {
             menssaje_error('Error!', "Debe seleccionar al menos un producto", 'far fa-times-circle');
             return false
         }
         compras.items.fecha_compra = $('input[name="fecha_compra"]').val();
+        compras.items.comprobante = $('#id_comprobante').val();
         compras.items.proveedor = $('#id_proveedor option:selected').val();
         //compra.items.estado = $('#id_estado option:selected').val();
         var parameters = new FormData();

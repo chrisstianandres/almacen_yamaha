@@ -1,5 +1,14 @@
 $(document).ready(function () {
-   validar_stilo();
+    validar_stilo();
+    $.validator.addMethod("tipo", function (value, element) {
+
+        var tipo = $("#id_tipo_doc").val();
+        if (tipo === '0') {
+            return ((value.length === 13));
+        } else if (tipo === '1') {
+            return ((value.length === 10));
+        }
+    }, "");
     $("#form").validate({
         rules: {
             razon_social: {
@@ -16,8 +25,8 @@ $(document).ready(function () {
             },
             numero_doc: {
                 required: true,
-                minlength: 10,
-                maxlength: 13,
+                tipo: true,
+                validar: true,
                 digits: true
             },
             correo: {
@@ -38,30 +47,30 @@ $(document).ready(function () {
         },
         messages: {
             razon_social: {
-                required: "Porfavor ingresa la razon social de la empresa",
-                minlength: "Debe ingresar al menos tres letras de tu nombre",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
             nombres: {
-                required: "Porfavor ingresa tus nombres",
-                minlength: "Debe ingresar al menos tres letras de tu nombre",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
             numero_doc: {
-                required: "Porfavor ingresa tu numero de documento",
-                minlength: "Tu numero de documento debe tener al menos 10 digitos",
+                required: "Esta informacion es requerida",
+                tipo: "Tu numero de documento debe tener al menos 10 digitos para cedula y 13 digitos para ruc",
                 digits: "Debe ingresar unicamente numeros",
-                maxlength: "Tu numero de documento debe tener maximo 10 digitos",
+                validar: "Tu numero de documento no es valido",
             },
             correo: "Debe ingresar un correo valido",
             telefono: {
-                required: "Porfavor ingresa tu numero celular",
-                minlength: "Tu numero de documento debe tener al menos 10 digitos",
+                required: "Esta informacion es requerida",
+                minlength: "Tu numero de celular debe tener al menos 10 digitos",
                 digits: "Debe ingresar unicamente numeros",
-                maxlength: "Tu numero de documento debe tener maximo 10 digitos",
+                maxlength: "Tu numero de celular debe tener maximo 10 digitos",
             },
             direccion: {
-                required: "Porfavor ingresa una direccion",
+                required: "Esta informacion es requerida",
                 minlength: "Ingresa al menos 5 letras",
                 maxlength: "Tu direccion debe tener maximo 50 caracteres",
             },
@@ -84,8 +93,8 @@ $(document).ready(function () {
             },
             numero_doc: {
                 required: true,
-                minlength: 10,
-                maxlength: 13,
+                tipo: true,
+                validar: true,
                 digits: true
             },
             correo: {
@@ -106,41 +115,69 @@ $(document).ready(function () {
         },
         messages: {
             razon_social: {
-                required: "Porfavor ingresa la razon social de la empresa",
-                minlength: "Debe ingresar al menos tres letras de tu nombre",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
             nombres: {
-                required: "Porfavor ingresa tus nombres",
-                minlength: "Debe ingresar al menos tres letras de tu nombre",
+                required: "Esta informacion es requerida",
+                minlength: "Debe ingresar al menos 3 letras",
                 lettersonly: "Debe ingresar unicamente letras y espacios"
             },
             numero_doc: {
-                required: "Porfavor ingresa tu numero de documento",
-                minlength: "Tu numero de documento debe tener al menos 10 digitos",
+                required: "Esta informacion es requerida",
+                tipo: "Tu numero de documento debe tener al menos 10 digitos para cedula y 13 digitos para ruc",
                 digits: "Debe ingresar unicamente numeros",
-                maxlength: "Tu numero de documento debe tener maximo 10 digitos",
+                validar: "Tu numero de documento no es valido",
             },
             correo: "Debe ingresar un correo valido",
             telefono: {
-                required: "Porfavor ingresa tu numero celular",
-                minlength: "Tu numero de documento debe tener al menos 10 digitos",
+                required: "Esta informacion es requerida",
+                minlength: "Tu numero de celular debe tener al menos 10 digitos",
                 digits: "Debe ingresar unicamente numeros",
-                maxlength: "Tu numero de documento debe tener maximo 10 digitos",
+                maxlength: "Tu numero de celular debe tener maximo 10 digitos",
             },
             direccion: {
-                required: "Porfavor ingresa una direccion",
+                required: "Esta informacion es requerida",
                 minlength: "Ingresa al menos 5 letras",
                 maxlength: "Tu direccion debe tener maximo 50 caracteres",
             },
         },
     });
 
-    $('#id_nombres').keyup(function () {
-        var changue = $(this).val().replace(/\b\w/g, function (l) {
-            return l.toUpperCase()
-        });
-        $(this).val(changue);
-    });
+    $('#id_razon_social')
+        .keyup(function () {
+            var changue = titleCase($(this).val());
+            $(this).val(changue);
+        })
+        .keypress(function (e) {
+            if (e.which >= 48 && e.which <= 57) {
+                return false;
+            }
+        });  //Para solo letras
+    $('#id_nombres')
+        .keyup(function () {
+            var changue = titleCase($(this).val());
+            $(this).val(changue);
+        })
+        .keypress(function (e) {
+            if (e.which >= 48 && e.which <= 57) {
+                return false;
+            }
+        });  //Para solo letras
+
+
+    $('#id_telefono').keypress(function (e) {
+        if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });//Para solo numeros
+
+
+    $('#id_numero_doc').keypress(function (e) {
+        if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }
+    });//Para solo numeros
 
 });

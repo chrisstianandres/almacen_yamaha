@@ -80,11 +80,14 @@ class inventario_form( TemplateView):
             if action == 'get_det':
                 data = []
                 prods = detalle_compra.objects.filter(compra_id=request.POST['id'])
-                for i in prods:
-                    item = i.toJSON()
-                    item['ubicacion'] = [{'id': u.id, 'nombre': str(u.nombre+' / '+u.area.nombre+' / ' + u.estante.nombre)} for u in ubicacion.objects.all()]
-                    item['ubicacion_id'] = ubicacion.objects.first().id
-                    data.append(item)
+                if ubicacion.objects.all():
+                    for i in prods:
+                        item = i.toJSON()
+                        item['ubicacion'] = [{'id': u.id, 'nombre': str(u.nombre+' / '+u.area.nombre+' / ' + u.estante.nombre)} for u in ubicacion.objects.all()]
+                        item['ubicacion_id'] = ubicacion.objects.first().id
+                        data.append(item)
+                else:
+                    data = {'error': 'Imposble registrar los productos, por falta de ubicaiones registradas'}
             elif action == 'search_ubi':
                 data = []
                 prods = ubicacion.objects.all()
@@ -94,7 +97,6 @@ class inventario_form( TemplateView):
             elif action == 'add':
                 datos = json.loads(request.POST['inventario'])
                 for p in datos['producto']:
-                    print(p['cantidad'])
                     for cant in range(0, p['cantidad']):
                         inv = inventario()
                         inv.compra_id = int(datos['compra'])

@@ -22,7 +22,7 @@ class clienteForm(forms.ModelForm):
                        'autocomplete': 'off'})
             self.fields['correo'].widget = EmailInput(
                 attrs={'placeholder': 'abc@correo.com', 'class': 'form-control form-rounded', 'autocomplete': 'off'})
-            self.fields['telefono'].widget.attrs['placeholder'] = 'Ingrese un numero de telefono'
+            self.fields['telefono'].widget.attrs['placeholder'] = 'Ingrese un numero de celular'
             self.fields['direccion'].widget = TextInput(
                 attrs={'placeholder': 'Ingrese su direccion con maximo 50 caracteres',
                        'class': 'form-control form-rounded', 'autocomplete': 'off'})
@@ -43,7 +43,7 @@ class clienteForm(forms.ModelForm):
             'tipo_doc': 'Tipo Documento',
             'numero_doc': 'N° de Documento',
             'correo': 'Correo',
-            'telefono': 'Telefono',
+            'telefono': 'Celular',
             'direccion': 'Direccion'
 
         }

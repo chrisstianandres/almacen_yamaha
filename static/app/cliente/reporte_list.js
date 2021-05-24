@@ -1,19 +1,41 @@
-var date_range = null;
-var date_now = new moment().format('YYYY-MM-DD');
-
-function generate_report() {
-    var parameters = {
+var datatable;
+var year = $('#year').val();
+var datos = {
+    fechas: {
+        //picker['start_date'] = year + '-01-01';
+        //         picker['end_date'] = year + '-12-31';
+        'start_date': year + '-01-01',
+        'end_date': year + '-12-31',
         'action': 'report',
-        'start_date': date_now,
-        'end_date': date_now,
-    };
+        'key': 0
+    },
+    add: function (data) {
+        this.fechas['key'] = data.key;
+        if (data.key === 0 || data.key === 1) {
+            this.fechas['start_date'] = data.start_date;
+            this.fechas['end_date'] = data.end_date;
+        } else if (data.key === 2) {
+            this.fechas['start_date'] = data.startDate.format('YYYY-MM-DD');
+            this.fechas['end_date'] = data.endDate.format('YYYY-MM-DD');
+        } else {
+            this.fechas['start_date'] = '';
+            this.fechas['end_date'] = ''
+        }
+        console.log(data);
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: this.fechas,
+            success: function (data) {
+                datatable.clear();
+                datatable.rows.add(data).draw();
+            }
+        });
 
-    if (date_range !== null) {
-        parameters['start_date'] = date_range.startDate.format('YYYY-MM-DD');
-        parameters['end_date'] = date_range.endDate.format('YYYY-MM-DD');
-    }
-
-    $('#example1').DataTable({
+    },
+};
+$(function () {
+    datatable = $('#example1').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -21,7 +43,7 @@ function generate_report() {
         ajax: {
             url: window.location.pathname,
             type: 'POST',
-            data: parameters,
+            data: datos.fechas,
             dataSrc: ""
         },
         language: {
@@ -85,9 +107,9 @@ function generate_report() {
                         return {
                             columns: [
                                 {
-                                     alignment: 'left',
+                                    alignment: 'left',
                                     text: ['Reporte creado el: ', {text: jsDate.toString()}]
-                                 },
+                                },
                                 {
                                     alignment: 'right',
                                     text: ['Pagina ', {text: page.toString()}, ' de ', {text: pages.toString()}]
@@ -140,24 +162,67 @@ function generate_report() {
 
         }
     });
-}
+    $('#search').on('change', function () {
+        daterange();
+        if ($(this).val() === '0') {
+            $('#year_seccion').show();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
 
-$(function () {
-    $('input[name="fecha"]').daterangepicker({
-        locale: {
-            format: 'YYYY-MM-DD',
-            applyLabel: '<i class="fas fa-chart-pie"></i> Aplicar',
-            cancelLabel: '<i class="fas fa-times"></i> Cancelar',
+        } else if ($(this).val() === '1') {
+            $('#year_seccion').show();
+            $('#range_date').hide();
+            $('#month_seccion').show();
+        } else if ($(this).val() === '2') {
+            $('#year_seccion').hide();
+            $('#range_date').show();
+            $('#month_seccion').hide();
+        } else {
+            $('#year_seccion').hide();
+            $('#range_date').hide();
+            $('#month_seccion').hide();
         }
-    }).on('apply.daterangepicker', function (ev, picker) {
-        date_range = picker;
-        generate_report();
-    }).on('cancel.daterangepicker', function (ev, picker) {
-        $(this).data('daterangepicker').setStartDate(date_now);
-        $(this).data('daterangepicker').setEndDate(date_now);
-        date_range = picker;
-        generate_report();
+    });
+    $('#year').on('change', function () {
+        daterange()
+    });
+    $('#month').on('change', function () {
+        daterange()
+    });
+    $('#fecha').on('apply.daterangepicker', function (ev, picker) {
+        picker['key'] = 2;
+        datos.add(picker);
     });
 
-    generate_report();
 });
+
+function daterange() {
+    year = $('#year').val();
+    // $("div.toolbar").html('<br><div class="col-lg-3"><input type="text" name="fecha" class="form-control form-control-sm input-sm"></div> <br>');
+    var picker = {};
+    var search = $('#search').val();
+    console.log(search);
+    if (search === '0') {
+        picker['key'] = 0;
+        picker['start_date'] = year + '-01-01';
+        picker['end_date'] = year + '-12-31';
+        datos.add(picker);
+    } else if (search === '1') {
+        picker['key'] = 1;
+        picker['start_date'] = year;
+        picker['end_date'] = $('#month').val();
+        datos.add(picker);
+    } else if (search === '2') {
+        $('input[name="fecha"]').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: '<i class="fas fa-search"></i> Buscar',
+                cancelLabel: '<i class="fas fa-times"></i> Cancelar',
+            },
+            showDropdowns: true,
+        });
+    } else {
+        picker['key'] = 3;
+        datos.add(picker);
+    }
+}

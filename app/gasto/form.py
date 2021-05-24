@@ -6,6 +6,7 @@ class gastoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['tipo_gasto'].widget.attrs['autofocus'] = True
+        self.fields['tipo_gasto'].queryset = tipo_gasto.objects.none()
 
     class Meta:
         model = gasto
@@ -29,6 +30,11 @@ class gastoForm(ModelForm):
 
             'valor': TextInput(attrs={
                 'class': 'form-control',
+                'type': 'number',
+                'value': '1.00',
+                'min': "1.00",
+                'max': "10000.00",
+                'step': "0.01",
                 'placeholder': 'Ingrese el valor del gasto',
                 'sytle': 'with 100%',
 

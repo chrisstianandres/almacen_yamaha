@@ -15,9 +15,14 @@ class productoForm(ModelForm):
                   'modelo',
                   'descripcion',
                   'pvp',
+                  'p_venta',
                   'imagen'
 
                   ]
+        labels = {
+            'pvp': 'Precio de compra',
+            'p_venta': 'Precio de venta',
+        }
         widgets = {
             'marca': Select(attrs={
                 'class': 'form-control select2',
@@ -34,6 +39,7 @@ class productoForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Ingrese el nombre del producto',
                 'sytle': 'with 100%',
+                'id': 'id_nombre_producto'
 
             }),
             'descripcion': TextInput(attrs={
@@ -44,8 +50,18 @@ class productoForm(ModelForm):
             }),
             'pvp': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ingrese el valor del producto',
+                'placeholder': 'Ingrese el valor de compra del producto',
                 'sytle': 'with 100%',
+                'type': 'number',
+                'step': "0.01",
+
+            }),
+            'p_venta': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el valor de venta del producto',
+                'sytle': 'with 100%',
+                'type': 'number',
+                'step': "0.01",
 
             }),
         }

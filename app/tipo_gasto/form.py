@@ -14,16 +14,20 @@ class tipo_gastoForm(forms.ModelForm):
             })
             self.fields['nombre'].widget = TextInput(
                 attrs={'placeholder': 'Ingrese el nombre del tipo de gasto', 'class': 'form-control form-rounded','autocomplete': 'off'})
+            self.fields['tipo'].widget.attrs = {
+                'class': 'form-control select2',
+                'data-live-search': "true"
+            }
 
         # habilitar, desabilitar, y mas
 
     class Meta:
         model = tipo_gasto
-        fields = ['nombre',
+        fields = ['nombre', 'tipo'
 
                   ]
         labels = {
-            'nombre': 'Nombre',
+            'nombre': 'Nombre', 'tipo': 'Tipo de Gasto'
 
 
         }

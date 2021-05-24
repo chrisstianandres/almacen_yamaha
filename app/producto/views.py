@@ -64,7 +64,7 @@ class producto_create(LoginRequiredMixin,usuariomixin,CreateView):
     template_name = 'producto/producto.html'
     success_url = reverse_lazy('producto:lista')
 
-
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -74,14 +74,34 @@ class producto_create(LoginRequiredMixin,usuariomixin,CreateView):
             action = request.POST['action']
             if action == 'add':
                 form = self.form_class(request.POST, request.FILES)
-                if form.is_valid():
-                    data = form.save()
-                img = self.model.objects.get(id=data.id)
-                image = Image.open(img.imagen)
-                size = (512, 512)
-                image = image.resize(size, Image.ANTIALIAS)
-                image.save(img.imagen.path)
+                if self.model.objects.filter(nombre=form.data['nombre'], marca_id=form.data['marca'], modelo_id=form.data['modelo']):
+                    form.add_error('nombre', 'Ya existe un producto con ese nombre, y con la misma marca o modelo')
+                    data['title'] = 'Creacion de Producto'
+                    data['nuevo'] = reverse_lazy('producto:crear')
+                    data['url'] = reverse_lazy('producto:lista')
+                    data['entidad'] = 'Producto'
+                    data['action'] = 'add'
+                    data['form'] = form
+                    return render(request, self.template_name, data)
+                else:
+                    if form.is_valid():
+                        data = form.save()
+                        img = self.model.objects.get(id=data.id)
+                        if img.imagen != '':
+                            image = Image.open(img.imagen)
+                            size = (512, 512)
+                            image = image.resize(size, Image.ANTIALIAS)
+                            image.save(img.imagen.path)
+                    else:
+                        data['title'] = 'Creacion de Producto'
+                        data['nuevo'] = reverse_lazy('producto:crear')
+                        data['url'] = reverse_lazy('producto:lista')
+                        data['entidad'] = 'Producto'
+                        data['action'] = 'add'
+                        data['form'] = form
+                        return render(request, self.template_name, data)
                 return HttpResponseRedirect(self.success_url)
+
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -121,10 +141,11 @@ class producto_update(LoginRequiredMixin,usuariomixin,CreateView):
                 form = self.form_class(request.POST or None, request.FILES, instance=pr)
                 data = form.save()
                 img = self.model.objects.get(id=data.id)
-                image = Image.open(img.imagen)
-                size = (512, 512)
-                image = image.resize(size, Image.ANTIALIAS)
-                image.save(img.imagen.path)
+                if img.imagen != '':
+                    image = Image.open(img.imagen)
+                    size = (512, 512)
+                    image = image.resize(size, Image.ANTIALIAS)
+                    image.save(img.imagen.path)
                 return HttpResponseRedirect(self.success_url)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'

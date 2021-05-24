@@ -1,6 +1,5 @@
-function menssaje_error(obj) {
+function menssaje_error(title, obj, icon) {
     var html = '';
-    console.log(obj);
     if (typeof (obj) === 'object') {
         html = '<ul style="text-align: left;">';
         $.each(obj, function (key, value) {
@@ -12,7 +11,7 @@ function menssaje_error(obj) {
     }
 
     Swal.fire({
-        title: 'Error!',
+        title: title,
         html: html,
         icon: 'error'
     });
@@ -111,9 +110,6 @@ function submit_with_ajax_other(url, title, content, parameters, callback) {
 }
 
 function validar_stilo() {
-    jQuery.validator.addMethod("lettersonly", function (value, element) {
-        return this.optional(element) || /^[a-z," ",ñ,.]+$/i.test(value);
-    }, "Solo puede ingresar letras y espacios");
     $.validator.setDefaults({
         errorClass: 'invalid-feedback',
 
@@ -164,6 +160,16 @@ function validar_stilo() {
             return parseInt(cad.charAt(9)) === total;
         }
     }
+
+    jQuery.validator.addMethod("lettersonly", function (value, element) {
+        return this.optional(element) || /^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/i.test(value);
+        //[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$
+    }, "Letters and spaces only please");
+
+    jQuery.validator.addMethod("mayoredad", function (value, element) {
+        return value>=18 && value<=60;
+        //[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$
+    }, "Debe ingresar un edad entre 18 y 60 años");
 
 }
 
@@ -324,4 +330,12 @@ function login(url, parametros, callback) {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert(textStatus + ': ' + errorThrown);
     })
+}
+
+function reset(formulario) {
+    $(formulario)[0].reset();
+    var validator = $(formulario).validate();
+    validator.resetForm();
+    $('.is-valid').removeClass('is-valid');
+    $('.is-invalid').removeClass('is-invalid');
 }

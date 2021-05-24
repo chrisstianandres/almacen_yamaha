@@ -59,10 +59,7 @@ INSTALLED_APPS = [
     'app.area',
     'app.estante',
     'app.ubicacion',
-    'app.devolucion',
-
-
-
+    # 'app.devolucion'
 ]
 
 MIDDLEWARE = [
@@ -104,8 +101,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bd_yamaha',
-        'USER': 'localhost',
-        'PASSWORD': '12345',
+        'USER': 'user_bd',
+        'PASSWORD': '123456',
         'HOST': 'localhost',
         'PORT': '3306',
     }
