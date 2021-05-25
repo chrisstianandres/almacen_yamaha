@@ -20,7 +20,7 @@
     "user": 1,
     "content_type": 22,
     "object_id": "1",
-    "object_repr": "¡rea A",
+    "object_repr": "√Årea A",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
@@ -46,7 +46,7 @@
     "user": 1,
     "content_type": 24,
     "object_id": "1",
-    "object_repr": "¡rea de Cascos / ¡rea A / A1",
+    "object_repr": "√Årea de Cascos / √Årea A / A1",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
@@ -59,7 +59,7 @@
     "user": 1,
     "content_type": 8,
     "object_id": "4",
-    "object_repr": "2021-05-20 David MacÌas",
+    "object_repr": "2021-05-20 David Mac√≠as",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Comprobante\"]}}]"
   }
@@ -72,7 +72,7 @@
     "user": 1,
     "content_type": 8,
     "object_id": "3",
-    "object_repr": "2021-05-19 David MacÌas",
+    "object_repr": "2021-05-19 David Mac√≠as",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Comprobante\"]}}]"
   }
@@ -111,7 +111,7 @@
     "user": 1,
     "content_type": 8,
     "object_id": "1",
-    "object_repr": "2021-05-19 David MacÌas",
+    "object_repr": "2021-05-19 David Mac√≠as",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Comprobante\"]}}]"
   }
@@ -1618,7 +1618,7 @@
   "pk": 2,
   "fields": {
     "razon_social": "Yamaha Ecuador",
-    "nombres": "David MacÌas",
+    "nombres": "David Mac√≠as",
     "tipo_doc": 1,
     "numero_doc": "0910978329",
     "correo": "yamahaventas@hotmail.com",
@@ -1723,28 +1723,28 @@
   "model": "area.area",
   "pk": 1,
   "fields": {
-    "nombre": "¡rea A"
+    "nombre": "√Årea A"
   }
 },
 {
   "model": "area.area",
   "pk": 3,
   "fields": {
-    "nombre": "¡rea B"
+    "nombre": "√Årea B"
   }
 },
 {
   "model": "area.area",
   "pk": 4,
   "fields": {
-    "nombre": "¡rea C"
+    "nombre": "√Årea C"
   }
 },
 {
   "model": "area.area",
   "pk": 5,
   "fields": {
-    "nombre": "¡rea D"
+    "nombre": "√Årea D"
   }
 },
 {
@@ -1765,7 +1765,7 @@
   "model": "ubicacion.ubicacion",
   "pk": 1,
   "fields": {
-    "nombre": "¡rea de Cascos",
+    "nombre": "√Årea de Cascos",
     "area": 1,
     "estante": 1
   }
