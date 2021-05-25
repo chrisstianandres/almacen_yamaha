@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
 from app.mixin import usuariomixin, ValidatePermissionRequiredMixin
 
-# Create your views here.
+
 class user_list(LoginRequiredMixin, usuariomixin, ListView):
     model = User
     template_name = 'user/user_list.html'
@@ -63,7 +63,7 @@ class user_create(LoginRequiredMixin, usuariomixin, CreateView):
         try:
             action = request.POST['action']
             if action == 'add':
-                form = self.get_form()
+                form = self.form_class(request.POST, request.FILES)
                 data = form.save()
                 return HttpResponseRedirect(self.success_url)
             else:

@@ -19,6 +19,7 @@ class userForm(ModelForm):
             'password',
             'email',
             'telefono',
+            'foto',
             'direccion',
             'sexo',
             'groups',
@@ -34,6 +35,7 @@ class userForm(ModelForm):
             'telefono': 'Telefono',
             'direccion': 'Direccion',
             'sexo': 'Genero',
+            'foto': 'Foto',
             'groups': 'Rol',
             'is_superuser': 'Administraidor (Super Usuario)'
 
