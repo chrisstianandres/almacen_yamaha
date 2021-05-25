@@ -77,7 +77,7 @@ class CrudViewGroup(TemplateView):
                 contentype = ContentType.objects.order_by('model')
                 x = 1
                 for c in contentype.exclude(model__in=['logentry', 'permission', 'session', 'contenttype', 'cargo',
-                                                       'detalle_venta', 'detalle_compra']).exclude(id=26):
+                                                       'detalle_venta', 'detalle_compra']):
                     nombre = c.model
                     if c.name == 'grupo':
                         nombre = 'rol'

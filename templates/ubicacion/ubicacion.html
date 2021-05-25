@@ -1,0 +1,144 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'lib/adminLTE/plugins/select2/css/select2.min.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'lib/adminLTE/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/adminLTE/plugins/select2/css/select2.min.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'lib/adminLTE/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.css' %}">
+    <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
+{% endblock %}
+<!--########################################################################### -->
+{% block conten %}
+    <form method="post" action="." enctype="multipart/form-data" id="form">
+        <div class="card card-secondary">
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    {{ form.nombre }}
+                </div>
+                <label>Area:</label>
+                <div class="input-group">
+                    {{ form.area }}
+                    <div class="input-group-append">
+                        <button class="btn btn-success btn-flat" id="btnaddarea" type="button">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <label>Estante:</label>
+                <div class="input-group">
+                    {{ form.estante }}
+                    <div class="input-group-append">
+                        <button class="btn btn-success btn-flat" id="btnaddestante" type="button">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary btn-sm btn-flat" style="color: white">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a href="{{ url }}" class="btn btn-danger btn-sm btn-flat ">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+    <!-- modal marca -->
+    <div class="modal fade" id="mymodalarea" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLongTitle"
+         aria-hidden="true">
+        <form id="formarea" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="{{ action }}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            <b><i class="fa fa-user-plus"></i>Nuevo registro de un area</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmarea.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat"><i
+                                class="fa fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- modal modelo -->
+    <div class="modal fade" id="mymodalestante" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLongTitle"
+         aria-hidden="true">
+        <form id="formestante" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="{{ action }}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            <b><i class="fa fa-user-plus"></i>Nuevo registro de un estante</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmestante.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat"><i
+                                class="fa fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+<!--########################################################################### -->
+{% block scripts_extra %}
+    <script src="{% static 'app/ubicacion/form.js' %}"></script>
+    <script src="{% static 'app/area/form.js' %}"></script>
+    <script src="{% static 'app/estante/form.js' %}"></script>
+{% endblock %}

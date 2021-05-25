@@ -128,7 +128,7 @@ function listar() {
                 width: '10%',
                 orderable: false,
                 render: function (data, type, row) {
-                    if (row.nombre === 'empresa' || row.nombre === 'devolucion' || row.nombre === 'inventario') {
+                    if (row.nombre === 'empresa' || row.nombre === 'devolucion' || row.nombre === 'inventario'|| row.nombre === 'reportes') {
                         return ''
                     } else {
                         return data === 0 ? '<input type="checkbox" name="eliminar">' : '<input type="checkbox" checked="checked" name="eliminar">';
@@ -141,7 +141,7 @@ function listar() {
                 width: '10%',
                 orderable: false,
                 render: function (data, type, row) {
-                    if (row.nombre === 'compra' || row.nombre === 'venta' || row.nombre === 'devolucion' || row.nombre === 'inventario') {
+                    if (row.nombre === 'compra' || row.nombre === 'venta' || row.nombre === 'devolucion' || row.nombre === 'inventario' || row.nombre === 'reportes') {
                         return ''
                     } else {
                         return data === 0 ? '<input type="checkbox" name="editar">' : '<input type="checkbox" checked="checked" name="editar">';
@@ -156,7 +156,7 @@ function listar() {
                 width: '10%',
                 orderable: false,
                 render: function (data, type, row) {
-                    if (row.nombre === 'empresa' || row.nombre === 'inventario') {
+                    if (row.nombre === 'empresa' || row.nombre === 'inventario' || row.nombre === 'reportes') {
                         return '';
                     } else {
                         return data === 0 ? '<input type="checkbox" name="agregar">' : '<input type="checkbox" checked="checked" name="agregar">';

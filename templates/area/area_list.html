@@ -1,0 +1,15 @@
+{% extends 'bases/list.html' %}
+{% load static %}
+{% block table %}
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Opciones</th>
+    </tr>
+    </thead>
+    <tbody>
+</tbody>
+{% endblock %}
+{% block scripts_extra %}
+    <script src="{% static 'app/area/list.js' %}"></script>
+{% endblock %}
