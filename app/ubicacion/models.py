@@ -12,6 +12,9 @@ class ubicacion(models.Model):
     def __str__(self):
         return '{} / {} / {}'.format( self.nombre, self.area.nombre, self.estante.nombre)
 
+    def full_name(self):
+        return '{} / {} / {}'.format( self.nombre, self.area.nombre, self.estante.nombre)
+
     def toJSON(self):
         item = model_to_dict(self)
         item['full_name'] = self.nombre+' / '+self.area.nombre+' / ' + self.estante.nombre

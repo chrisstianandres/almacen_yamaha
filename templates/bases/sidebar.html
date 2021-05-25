@@ -14,7 +14,7 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{% static 'lib/adminLTE/dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2"
+                <img src="{{ request.user.get_image }}" class="img-circle elevation-2"
                      alt="User Image">
             </div>
             <div class="info">
@@ -34,104 +34,124 @@
                             <i class="right fa fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-user-circle nav-icon"></i>
-                                <p>
-                                    Clientes
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'cliente:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'cliente:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul> <!--clientes -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-cart-plus nav-icon"></i>
-                                <p>
-                                    Ventas
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'venta:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'venta:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--ventas -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-shopping-bag nav-icon"></i>
-                                <p>
-                                    Compras
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'compra:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'compra:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--compras -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-money-bill-wave nav-icon"></i>
-                                <p>
-                                    Devoluciones
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'devolucion:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul><!--devoluciones -->
-                </li> <hr><!--modulo comercial-->
+                    {% if perms.cliente.add_cliente or  perms.cliente.view_cliente %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-user-circle nav-icon"></i>
+                                    <p>
+                                        Clientes
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                {% if perms.cliente.view_cliente %}
+                                    <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'cliente:lista' %}" class="nav-link">
+                                            <i class="fa fa-table nav-icon"></i>
+                                            <p>Listado</p>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if perms.cliente.add_cliente %}
+                                    <li class="nav-item">
+                                        <a href="{% url 'cliente:crear' %}" class="nav-link">
+                                            <i class="fa fa-plus-circle nav-icon"></i>
+                                            <p>Ingreso</p>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                </ul>
+                            </li>
+                        </ul> <!--clientes -->
+                    {% endif %}
+                    {% if perms.venta.add_venta or  perms.venta.view_venta %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-cart-plus nav-icon"></i>
+                                    <p>
+                                        Ventas
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.venta.view_venta %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'venta:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.venta.add_venta %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'venta:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--ventas -->
+                    {% endif %}
+                    {% if perms.compra.add_compra or  perms.compra.view_compra %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-shopping-bag nav-icon"></i>
+                                    <p>
+                                        Compras
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.compra.view_compra %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'compra:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.compra.add_compra %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'compra:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--compras -->
+                    {% endif %}
+                    {% if perms.devolucion.view_devolucion %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-money-bill-wave nav-icon"></i>
+                                    <p>
+                                        Devoluciones
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.devolucion.view_devolucion %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'devolucion:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--devoluciones -->
+                    {% endif %}
+                </li>
+                <hr><!--modulo comercial-->
 
                 <li class="nav-item has-treeview">
                     <a class="nav-link">
@@ -141,138 +161,132 @@
                             <i class="right fa fa-angle-left"></i>
                         </p>
                     </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-users nav-icon"></i>
-                                <p>
-                                    Empleados
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'empleado:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'empleado:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--empleados-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-money-bill-wave nav-icon"></i>
-                                <p>
-                                    Gastos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'gasto:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'gasto:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--gasto-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-money-bill-wave nav-icon"></i>
-                                <p>
-                                    Tipo de Gastos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'tipo_gasto:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'tipo_gasto:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--tipo de gasto-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-ambulance nav-icon"></i>
-                                <p>
-                                    Proveedor
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'proveedor:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'proveedor:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--proveedor-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-address-book nav-icon"></i>
-                                <p>
-                                    Cargos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'cargo:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'cargo:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--cargos-->
-                </li> <hr> <!-- modulo administrativo-->
+                    {% if perms.empleado.add_empleado or  perms.empleado.view_empleado %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-users nav-icon"></i>
+                                    <p>
+                                        Empleados
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.empleado.view_empleado %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'empleado:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.empleado.add_empleado %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'empleado:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--empleados-->
+                    {% endif %}
+                    {% if perms.gasto.add_gasto or  perms.gasto.view_gasto %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-money-bill-wave nav-icon"></i>
+                                    <p>
+                                        Gastos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.gasto.view_gasto %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'gasto:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.gasto.add_gasto %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'gasto:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--gasto-->
+                    {% endif %}
+                    {% if perms.tipo_gasto.add_tipo_gasto or  perms.tipo_gasto.view_tipo_gasto %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-money-bill-wave nav-icon"></i>
+                                    <p>
+                                        Tipo de Gastos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.tipo_gasto.add_tipo_gasto %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'tipo_gasto:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.tipo_gasto.add_tipo_gasto %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'tipo_gasto:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--tipo de gasto-->
+                    {% endif %}
+                    {% if perms.proveedor.add_proveedor or  perms.proveedor.view_proveedor %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-ambulance nav-icon"></i>
+                                    <p>
+                                        Proveedor
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.proveedor.view_proveedor %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'proveedor:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.proveedor.add_proveedor %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'proveedor:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--proveedor-->
+                    {% endif %}
+                </li>
+                <hr> <!-- modulo administrativo-->
 
                 <li class="nav-item has-treeview">
                     <a class="nav-link">
@@ -282,80 +296,91 @@
                             <i class="right fa fa-angle-left"></i>
                         </p>
                     </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-users nav-icon"></i>
-                                <p>
-                                    Usuarios
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'user:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'user:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--usuarios-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-money-bill-wave nav-icon"></i>
-                                <p>
-                                    Roles
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--asignaciones-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-ambulance nav-icon"></i>
-                                <p>
-                                    Empresa
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'empresa:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul><!--empresa-->
-
-                </li> <hr> <!-- modulo seguridad-->
+                    {% if perms.user.add_user or  perms.user.view_user %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-users nav-icon"></i>
+                                    <p>
+                                        Usuarios
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.user.view_user %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'user:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.user.add_user %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'user:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--usuarios-->
+                    {% endif %}
+                    {% if perms.group.add_group or  perms.group.view_group %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-money-bill-wave nav-icon"></i>
+                                    <p>
+                                        Roles
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.group.view_group %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'cargo:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.group.add_group %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'cargo:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--asignaciones-->
+                    {% endif %}
+                    {% if perms.empresa.view_empresa %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-ambulance nav-icon"></i>
+                                    <p>
+                                        Empresa
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'empresa:lista' %}" class="nav-link">
+                                            <i class="fa fa-table nav-icon"></i>
+                                            <p>Listado</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul><!--empresa-->
+                    {% endif %}
+                </li>
+                <hr> <!-- modulo seguridad-->
 
                 <li class="nav-item has-treeview">
                     <a class="nav-link">
@@ -365,222 +390,262 @@
                             <i class="right fa fa-angle-left"></i>
                         </p>
                     </a>
+                    {% if perms.producto.add_producto or  perms.producto.view_producto %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-users nav-icon"></i>
+                                    <p>
+                                        Producto
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.producto.view_producto %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'producto:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.producto.add_producto %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'producto:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--producto-->
+                    {% endif %}
+                    {% if perms.marca.add_marca or  perms.marca.view_marca %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-money-bill-wave nav-icon"></i>
+                                    <p>
+                                        Marca
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.marca.view_marca %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'marca:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.marca.add_marca %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'marca:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--marca-->
+                    {% endif %}
+                    {% if perms.area.add_area or  perms.area.view_area %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="far fa-clone"></i>
+                                    <p>
+                                        Area
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.area.view_area %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'area:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.area.add_area %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'area:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--area-->
+                    {% endif %}
+                    {% if perms.estante.add_estante or  perms.estante.view_estante %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fas fa-umbrella-beach"></i>
+                                    <p>
+                                        Estante
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.estante.view_estante %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'estante:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.estante.add_estante %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'estante:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--estante-->
+                    {% endif %}
+                    {% if perms.modelo.add_modelo or  perms.modelo.view_modelo %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-money-bill-wave nav-icon"></i>
+                                    <p>
+                                        Modelo
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if  perms.modelo.view_modelo %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'modelo:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.modelo.add_modelo %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'modelo:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--modelo-->
+                    {% endif %}
+                    {% if perms.inventario.view_inventario %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link" href="{% url 'inventario:lista' %}">
+                                    <i class="fa fa-ambulance nav-icon"></i>
+                                    <p>
+                                        Inventario
+                                    </p>
+                                </a>
+                            </li>
+                        </ul><!--inventario-->
+                    {% endif %}
+                    {% if perms.ubicacion.add_ubicacion or  perms.ubicacion.view_ubicacion %}
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a class="nav-link">
+                                    <i class="fa fa-globe nav-icon"></i>
+                                    <p>
+                                        Ubicacion
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    {% if perms.ubicacion.view_ubicacion %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'ubicacion:lista' %}" class="nav-link">
+                                                <i class="fa fa-table nav-icon"></i>
+                                                <p>Listado</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.ubicacion.add_ubicacion %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'ubicacion:crear' %}" class="nav-link">
+                                                <i class="fa fa-plus-circle nav-icon"></i>
+                                                <p>Ingreso</p>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul><!--ubicacion-->
+                    {% endif %}
+                </li>
+                <hr> <!-- modulo almacenamiento-->
 
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-users nav-icon"></i>
-                                <p>
-                                    Producto
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'producto:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'producto:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--producto-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-money-bill-wave nav-icon"></i>
-                                <p>
-                                    Marca
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'marca:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'marca:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--marca-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="far fa-clone"></i>
-                                <p>
-                                    Area
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'area:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'area:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--area-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fas fa-umbrella-beach"></i>
-                                <p>
-                                    Estante
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'estante:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'estante:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--area-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-money-bill-wave nav-icon"></i>
-                                <p>
-                                    Modelo
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'modelo:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'modelo:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--modelo-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link" href="{% url 'inventario:lista' %}">
-                                <i class="fa fa-ambulance nav-icon"></i>
-                                <p>
-                                    Inventario
-                                </p>
-                            </a>
-                        </li>
-                    </ul><!--inventario-->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a class="nav-link">
-                                <i class="fa fa-globe nav-icon"></i>
-                                <p>
-                                    Ubicacion
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'ubicacion:lista' %}" class="nav-link">
-                                        <i class="fa fa-table nav-icon"></i>
-                                        <p>Listado</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'ubicacion:crear' %}" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Ingreso</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                    </ul><!--ubicacion-->
-                </li> <hr> <!-- modulo almacenamiento-->
-                
-                <li class="nav-item has-treeview">
-                    <a class="nav-link">
-                        <i class="nav-icon fa fa-table"></i>
-                        <p>
-                            Reportes
-                            <i class="right fa fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{% url 'compra:reporte' %}" class="nav-link">
-                                <i class="fa fa-shopping-bag nav-icon"></i>
-                                <p>Compra</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'venta:reporte_total' %}" class="nav-link">
-                                <i class="fa fa-cart-plus nav-icon"></i>
-                                <p>Venta</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'cliente:reporte' %}" class="nav-link">
-                                <i class="fa fa-user nav-icon"></i>
-                                <p>Cliente</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'producto:reporte' %}" class="nav-link">
-                                <i class="fa fa-box nav-icon"></i>
-                                <p>Stock Producto</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'gasto:reporte_fijo' %}" class="nav-link">
-                                <i class="fa fa-money-bill nav-icon"></i>
-                                <p>Gasto</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'devolucion:reporte' %}" class="nav-link">
-                                <i class="fa fa-recycle nav-icon"></i>
-                                <p>Devoluciones</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li> <!--reportes-->
+                {% if perms.reportes.view_reportes %}
+                    <li class="nav-item has-treeview">
+                        <a class="nav-link">
+                            <i class="nav-icon fa fa-table"></i>
+                            <p>
+                                Reportes
+                                <i class="right fa fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'compra:reporte' %}" class="nav-link">
+                                    <i class="fa fa-shopping-bag nav-icon"></i>
+                                    <p>Compra</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'venta:reporte_total' %}" class="nav-link">
+                                    <i class="fa fa-cart-plus nav-icon"></i>
+                                    <p>Venta</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'cliente:reporte' %}" class="nav-link">
+                                    <i class="fa fa-user nav-icon"></i>
+                                    <p>Cliente</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'producto:reporte' %}" class="nav-link">
+                                    <i class="fa fa-box nav-icon"></i>
+                                    <p>Registro y Ubicacion <br> de Productos</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'producto:reporte' %}" class="nav-link">
+                                    <i class="fa fa-box nav-icon"></i>
+                                    <p>Stock Producto</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'gasto:reporte_fijo' %}" class="nav-link">
+                                    <i class="fa fa-money-bill nav-icon"></i>
+                                    <p>Gasto</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'devolucion:reporte' %}" class="nav-link">
+                                    <i class="fa fa-recycle nav-icon"></i>
+                                    <p>Devoluciones</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li> <!--reportes-->
+                {% endif %}
 
 
             </ul>

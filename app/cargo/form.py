@@ -2,6 +2,7 @@ from django import forms
 from datetime import *
 from django.forms import SelectDateWidget, TextInput, NumberInput, EmailInput
 from .models import cargo
+
 class cargoForm(forms.ModelForm):
     # constructor
     def __init__(self, *args, **kwargs):

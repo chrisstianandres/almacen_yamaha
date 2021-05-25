@@ -4,9 +4,9 @@ from app.cargo.views import *
 app_name = 'cargo'
 
 urlpatterns = [
-    path('lista/', cargo_list.as_view(), name='lista'),
-    path('crear/', cargo_create.as_view(), name='crear'),
-    path('editar/<int:pk>/', cargo_update.as_view(), name='editar'),
-    path('eliminar/<int:pk>/', cargo_delete.as_view(), name='eliminar'),
+    path('lista/', Listgroupsview.as_view(), name='lista'),
+    path('crear/', CrudViewGroup.as_view(), name='crear'),
+    path('editar/<int:pk>/', UpdateViewGroup.as_view(), name='editar'),
+    path('eliminar/<int:pk>/', DeleteViewGroup.as_view(), name='eliminar'),
 
 ]

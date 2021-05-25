@@ -29,8 +29,16 @@ class cliente_list(LoginRequiredMixin, usuariomixin, ListView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
+                editar_perms = 0
+                del_perms = 0
+                if request.user.has_perm('cliente.can_change_cliente', 'cliente.can_delete_cliente'):
+                    editar_perms = 1
+                    del_perms = 1
                 for i in cliente.objects.all():
-                    data.append(i.toJSON())
+                    item = i.toJSON()
+                    item['editar_perms'] = editar_perms
+                    item['del_perms'] = del_perms
+                    data.append(item)
             elif action == 'delete':
                 pk = request.POST['id']
                 cli = cliente.objects.get(pk=pk)

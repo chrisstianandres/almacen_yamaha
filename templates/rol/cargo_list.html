@@ -1,0 +1,32 @@
+{% extends 'bases/list.html' %}
+{% load static %}
+
+{% block table %}
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Cargo</th>
+        <th>Opciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if object_list %}
+        {% for dato in object_list %}
+            <tr>
+                <td>{{ dato.id }}</td>
+                <td>{{ dato.name }}</td>
+                <td><a type="button" class="btn btn-success btn-xs" data-toggle="tooltip"
+                       title="Editar Datos"
+                       href="{% url 'cargo:editar' dato.id %}"><i class="fa fa-edit"></i></a>
+                    <a type="button" class="btn btn-danger btn-xs"
+                       data-toggle="tooltip"
+                       title="Eliminar" rel="del" style="color: white">
+                        <i class="fa fa-trash"></i></a></td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    </tbody>
+{% endblock %}
+{% block scripts_extra %}
+    <script src="{% static 'app/cargo/list.js' %}"></script>
+{% endblock %}

@@ -32,8 +32,11 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var editar = '<a type="button" class="btn btn-outline-success btn-sm btn-round" data-toggle="tooltip"title="Editar Datos" href="/cliente/editar/' + data + '"><i class="fa fa-edit"></i></a> ';
-                    borrar = '<a type="button" class="btn btn-outline-danger btn-sm btn-round" data-toggle="tooltip" title="Eliminar Datos" rel="delete"><i class="fa fa-trash"></i></a>';
+                    var editar = row.editar_perms === 1 ? '<a type="button" class="btn btn-outline-success btn-sm btn-round" ' +
+                        'data-toggle="tooltip"title="Editar Datos" href="/cliente/editar/' + data + '">' +
+                        '<i class="fa fa-edit"></i></a> ':' ';
+                    var borrar = row.del_perms === 1 ?'<a type="button" class="btn btn-outline-danger btn-sm btn-round" ' +
+                        'data-toggle="tooltip" title="Eliminar Datos" rel="delete"><i class="fa fa-trash"></i></a>':' ';
                     return editar + borrar;
                 }
             },

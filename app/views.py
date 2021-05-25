@@ -15,7 +15,8 @@ def menu(request):
     logo = '{}{}'.format(MEDIA_URL, 'logo.png')
 
     data = {
-        'title': 'Menu Principal', 'entidad': 'Menu Principal', 'logo': logo, 'productos': producto.objects.all()[0:7]
+        'title': 'Pagina de Inicio', 'entidad': 'Menu Principal', 'logo': logo,
+        'productos': producto.objects.all()[0:7], 'productos_full': producto.objects.all()
     }
     return render(request, 'index.html', data)
     # return render(request, 'bases/base.html', data)

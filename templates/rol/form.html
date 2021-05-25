@@ -1,0 +1,84 @@
+{% extends 'bases/form.html' %}
+{% load static %}
+{% block conten %}
+    <form method="post" action="." enctype="multipart/form-data" id="form">
+        <div class="card card-secondary">
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <input type="hidden" name="option" value="{{ option }}">
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="id_name">{{ form.name.label_tag }}</label>
+                    {{ form.name }}
+                </div>
+                <br><br>
+                <table id="datatable" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Ver</th>
+                        <th>Agregar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if object_list %}
+                        {% for dato in object_list %}
+                            <tr>
+                                <td>{{ dato.id }}</td>
+                                <td>{{ dato.name }}</td>
+                                <td><a type="button" class="btn btn-success btn-xs" data-toggle="tooltip"
+                                       title="Editar Datos"
+                                       href="{% url 'cargo:editar' dato.id %}"><i class="fa fa-edit"></i></a>
+                                    <a type="button" class="btn btn-danger btn-xs"
+                                       data-toggle="tooltip"
+                                       title="Eliminar" rel="del">
+                                        <i class="fa fa-trash"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary btn-sm btn-flat" style="color: white">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <a href="{{ url }}" class="btn btn-danger btn-sm btn-flat ">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block scripts %}
+     <script src="{% static 'lib/adminLTE/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/select2/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+    <!--tempusdominus-->
+    <script src="{% static 'lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.js' %}"></script>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'app/cargo/form.js' %}"></script>
+{% endblock %}

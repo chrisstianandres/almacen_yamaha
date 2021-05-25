@@ -26,10 +26,9 @@ class empresaForm(forms.ModelForm):
             self.fields['telefono'].widget = TextInput(
                 attrs={'placeholder': 'Ingrese el numero de telefono de la empresa',
                        'class': 'form-control form-rounded'})
-            self.fields['iva'].widget = TextInput(attrs={'class': 'form-control form-rounded', 'value': 0.12})
+            self.fields['iva'].widget = TextInput(attrs={'class': 'form-control form-rounded', 'type': 'number'})
             self.fields['ruc'].widget = TextInput(attrs={'placeholder': 'Ingrese el ruc de la empresa',
                                                          'class': 'form-control form-rounded'})
-            self.fields['indice'].widget = TextInput(attrs={'class': 'form-control form-rounded'})
 
         # habilitar, desabilitar, y mas
 
@@ -41,7 +40,6 @@ class empresaForm(forms.ModelForm):
                   'correo',
                   'direccion',
                   'iva',
-                  'indice',
                   'telefono'
                   ]
         labels = {
@@ -51,7 +49,6 @@ class empresaForm(forms.ModelForm):
             'correo': 'Correo',
             'direccion': 'Direecion',
             'iva': 'Iva',
-            'indice': 'Indice de Ganancia',
             'telefono': 'Telefono',
         }
         widgets = {
@@ -61,6 +58,5 @@ class empresaForm(forms.ModelForm):
             'correo': forms.TextInput(),
             'direccion': forms.TextInput(),
             'iva': forms.TextInput(),
-            'indice': forms.TextInput(),
             'telefono': forms.TextInput()
         }

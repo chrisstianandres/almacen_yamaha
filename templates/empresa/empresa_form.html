@@ -1,1 +1,5 @@
 {% extends 'bases/form.html' %}
+{% load static %}
+{% block scripts_extra %}
+<script src="{% static 'app/empresa/form.js' %}"></script>
+{% endblock %}

@@ -1,324 +1,261 @@
 {% extends 'bases/base.html' %}
 {% load static %}
 {% block head_extra %}
-<script src="{% static 'lib/highcharts-8.1.2/highcharts.js' %}"></script>
-<script src="{% static 'lib/highcharts-8.1.2/modules/exporting.js' %}"></script>
-<script src="{% static 'lib/highcharts-8.1.2/modules/export-data.js'%}"></script>
-<script src="{% static 'lib/highcharts-8.1.2/modules/accessibility.js'%}"></script>
-{%endblock%}
+    <script src="{% static 'lib/highcharts-8.1.2/highcharts.js' %}"></script>
+    <script src="{% static 'lib/highcharts-8.1.2/modules/exporting.js' %}"></script>
+    <script src="{% static 'lib/highcharts-8.1.2/modules/export-data.js' %}"></script>
+    <script src="{% static 'lib/highcharts-8.1.2/modules/accessibility.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/adminLTE/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'lib/adminLTE/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+{% endblock %}
 
 {% block conten %}
-<div class="row">
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fa fa-shopping-cart"></i></span>
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fa fa-shopping-cart"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Ventas</span>
-                <span class="info-box-number">
-                  ?
+                <div class="info-box-content">
+                    <span class="info-box-text">Ventas</span>
+                    <span class="info-box-number" id="ventas">
+                    {{ ventas }}
                 </span>
+                </div>
+                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
         </div>
-        <!-- /.info-box -->
-    </div>
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-red elevation-1"><i class="fa fa-shopping-cart"></i></span>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-gradient-red elevation-1"><i class="fa fa-shopping-cart"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Productos</span>
-                <span class="info-box-number">
-                  ?
+                <div class="info-box-content">
+                    <span class="info-box-text">Productos</span>
+                    <span class="info-box-number" id="productos">
+                    {{ productos }}
                 </span>
+                </div>
+                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
         </div>
-        <!-- /.info-box -->
-    </div>
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-blue elevation-1"><i class="fa fa-user"></i></span>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-gradient-blue elevation-1"><i class="fa fa-user"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Clientes</span>
-                <span class="info-box-number">
-                  ?
+                <div class="info-box-content">
+                    <span class="info-box-text">Clientes</span>
+                    <span class="info-box-number" id="clientes">
+                    {{ clientes }}
                 </span>
+                </div>
+                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
         </div>
-        <!-- /.info-box -->
-    </div>
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-orange elevation-1"><i class="fa fa-user"></i></span>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-gradient-orange elevation-1"><i class="fa fa-user"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Proveedores</span>
-                <span class="info-box-number">
-                  ?
+                <div class="info-box-content">
+                    <span class="info-box-text">Proveedores</span>
+                    <span class="info-box-number" id="proveedores">
+                    {{ proveedores }}
                 </span>
+                </div>
+                <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
         </div>
-        <!-- /.info-box -->
+        <!-- chart de ventas -->
+        <div class="col-6">
+            <div class="card card-gray">
+                <div class="card-header">
+                    <h3 class="card-title">Ventas del Periodo</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container"></div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+        </div>
+        <!-- chart de compras -->
+        <div class="col-6">
+            <div class="card card-yellow">
+                <div class="card-header">
+                    <h3 class="card-title">Compras del Periodo</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container_comp"></div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+        </div>
+
+        <!-- chart de productos -->
+        <div class="col-12">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Productos agotados o por agostarse (menor de 10 ud)</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="example1" class="table table-striped  " style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+        </div>
+
     </div>
     <!-- chart de ventas -->
-    <div class="col-6">
-        <div class="card card-gray">
-            <div class="card-header">
-                <h3 class="card-title">Ventas del Periodo</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="container"></div>
-            </div>
-            <!-- /.card-body -->
-        </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'lib/adminLTE/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminLTE/plugins/select2/js/select2.full.min.js' %}"></script>
 
-    </div>
-    <!-- chart de compras -->
-    <div class="col-6">
-        <div class="card card-yellow">
-            <div class="card-header">
-                <h3 class="card-title">Compras del Periodo</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="container_comp"></div>
-            </div>
-            <!-- /.card-body -->
-        </div>
-
-    </div>
-
-    <!-- chart de productos -->
-    <div class="col-12">
-        <div class="card card-danger">
-            <div class="card-header">
-                <h3 class="card-title">Productos vendidos en el Periodo</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="container_produc"></div>
-            </div>
-            <!-- /.card-body -->
-        </div>
-
-    </div>
-
-</div>
-<!-- chart de ventas -->
-<script type="application/javascript">
-Highcharts.chart('container', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: 'Ventas realizadas en el año'
-    },
-    xAxis: {
-        categories: [
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio',
-            'Julio',
-            'Agosto',
-            'Septiembre',
-            'Octubre',
-            'Noviembre',
-            'Diciembre'
-        ],
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Valores $'
-        }
-    },
-    tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} $</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-    },
-    plotOptions: {
-        column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-        }
-    },
-    series: [{
-        name: 'Porcentaje',
-        showInLegend: false,
-        colorByPoint: true,
-        data: {{ grafico_ventas_year_month|safe }}
-    }]
-});
-
-$(function (){
-grafico_ventas_year_month;
-});
-
-function grafico_ventas_year_month(){
-$.ajax({
-                        url: window.location.pathname,
-                        type: 'POST',
-                        data: {
-                             'action': 'grafico_ventas_year_month'
-                        },
-                        dataType: 'JSON',
-                    }).done(function (data) {
-                        console.log(data);
-                        if (!data.hasOwnProperty('error')) {
-                            callback(data);
-                            return false;
-                        }
-                        menssaje_error('Error', data.error, 'fas fa-exclamation-circle');
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(textStatus + ': ' + errorThrown);
-                    });
-}
-
-</script>
-
-<!-- chart de compras -->
-<script type="application/javascript">
-Highcharts.chart('container_comp', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: 'Compras realizadas en el año'
-    },
-    xAxis: {
-        categories: [
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio',
-            'Julio',
-            'Agosto',
-            'Septiembre',
-            'Octubre',
-            'Noviembre',
-            'Diciembre'
-        ],
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Valores $'
-        }
-    },
-    tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} $</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-    },
-    plotOptions: {
-        column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-        }
-    },
-    series: [{
-        name: 'Porcentaje',
-        showInLegend: false,
-        colorByPoint: true,
-        data: {{ grafico_compras_year_month|safe }}
-    }]
-});
-
-
-
-</script>
-
-<!-- chart de productos -->
-<script type="application/javascript">
-Highcharts.chart('container_produc', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Productos mas vendidos '
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: false
+    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+    <script src="{% static 'app/dashboard.js' %}"></script>
+    <script type="application/javascript">
+        Highcharts.chart('container', {
+            chart: {
+                type: 'column'
             },
-            showInLegend: true
-        }
-    },
-    series: [{
-        name: 'Brands',
-        colorByPoint: true,
-        data: [{
-            name: 'Chrome',
-            y: 61.41,
-            sliced: true,
-            selected: true
-        }, {
-            name: 'Internet Explorer',
-            y: 11.84
-        }, {
-            name: 'Firefox',
-            y: 10.85
-        }, {
-            name: 'Edge',
-            y: 4.67
-        }, {
-            name: 'Safari',
-            y: 4.18
-        }, {
-            name: 'Other',
-            y: 7.05
-        }]
-    }]
-});
+            title: {
+                text: 'Ventas realizadas en el año'
+            },
+            xAxis: {
+                categories: [
+                    'Enero',
+                    'Febrero',
+                    'Marzo',
+                    'Abril',
+                    'Mayo',
+                    'Junio',
+                    'Julio',
+                    'Agosto',
+                    'Septiembre',
+                    'Octubre',
+                    'Noviembre',
+                    'Diciembre'
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Valores $'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} $</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Porcentaje',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{ grafico_ventas_year_month|safe }}
+            }]
+        });
 
+        <!-- chart de compras -->
+        Highcharts.chart('container_comp', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Compras realizadas en el año'
+            },
+            xAxis: {
+                categories: [
+                    'Enero',
+                    'Febrero',
+                    'Marzo',
+                    'Abril',
+                    'Mayo',
+                    'Junio',
+                    'Julio',
+                    'Agosto',
+                    'Septiembre',
+                    'Octubre',
+                    'Noviembre',
+                    'Diciembre'
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Valores $'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} $</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Porcentaje',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{ grafico_compras_year_month|safe }}
+            }]
+        });
 
-
-</script>
-
+    </script>
 {% endblock %}

@@ -18,12 +18,12 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "first_name"},
-            {"data": "last_name"},
+            {"data": "full_name"},
             {"data": "username"},
             {"data": "email"},
             {"data": "date_joined"},
             {"data": "groups"},
+            {"data": "foto"},
             {"data": "id"},
 
         ],
@@ -40,6 +40,14 @@ $(function () {
             },
             {
                 targets: [-2],
+                class: 'text-center',
+                orderable: false,
+                render: function (data, type, row) {
+                    return '<img src="' + data + '" width="50" height="50" class="img-circle elevation-2" alt="User Image">';
+                }
+            },
+            {
+                targets: [-3],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {

@@ -3,6 +3,7 @@ from django.forms import *
 from app.user.models import *
 from django import forms
 
+
 class userForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,8 +34,8 @@ class userForm(ModelForm):
             'telefono': 'Telefono',
             'direccion': 'Direccion',
             'sexo': 'Genero',
-            'groups': 'Grupos',
-            'is_superuser': 'Administraidor'
+            'groups': 'Rol',
+            'is_superuser': 'Administraidor (Super Usuario)'
 
         }
         widgets = {
@@ -123,6 +124,7 @@ class userForm(ModelForm):
             data['error'] = str(e)
         return data
 
+
 class GroupForm(forms.ModelForm):
     # constructor
     def __init__(self, *args, **kwargs):
@@ -134,8 +136,7 @@ class GroupForm(forms.ModelForm):
             self.fields['name'].widget.attrs = {
                 'class': 'form-control form-control-sm input-sm'}
             self.fields['permissions'].widget.attrs = {
-                'class': 'form-control form-control-sm input-sm select2',
-            'multiple': 'multiple'}
+                'class': 'form-control form-control-sm input-sm select2', 'multiple': 'multiple'}
 
     class Meta:
         model = Group

@@ -8,11 +8,11 @@ $(function () {
             url: window.location.pathname,
             type: 'POST',
             data: {
-                'action' : 'searchdata'
+                'action': 'inventario'
             },
             dataSrc: ""
         },
-         language: {
+        language: {
             url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
         },
         columns: [
@@ -29,7 +29,7 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                   if (data >=6 ) {
+                    if (data >= 6) {
                         return '<span class=" badge badge-success"> ' + data + '</span>'
                     }
                     return '<span class=" badge badge-danger"> ' + data + '</span>'
@@ -40,7 +40,7 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                   return '$'+data
+                    return '$' + data
                 }
             },
         ]

@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Count
@@ -19,8 +20,10 @@ from app.mixin import usuariomixin
 from app.producto.models import producto
 from app.ubicacion.models import ubicacion
 
+year = [{'id': y, 'year': datetime.now().year - y} for y in range(0, 5)]
 
-class inventario_list(LoginRequiredMixin,usuariomixin,ListView):
+
+class inventario_list(LoginRequiredMixin, usuariomixin, ListView):
     model = inventario
     template_name = 'inventario/inventario_list.html'
 
@@ -55,13 +58,13 @@ class inventario_list(LoginRequiredMixin,usuariomixin,ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Inventario'
-        #context['nuevo'] = reverse_lazy('empleado:crear')
-        #context['url'] = reverse_lazy('empleado:lista')
+        # context['nuevo'] = reverse_lazy('empleado:crear')
+        # context['url'] = reverse_lazy('empleado:lista')
         context['entidad'] = 'Inventario'
         return context
 
 
-class inventario_form( TemplateView):
+class inventario_form(TemplateView):
     model = inventario
     # form_class = inventarioForm
     template_name = 'inventario/form.html'
@@ -83,7 +86,9 @@ class inventario_form( TemplateView):
                 if ubicacion.objects.all():
                     for i in prods:
                         item = i.toJSON()
-                        item['ubicacion'] = [{'id': u.id, 'nombre': str(u.nombre+' / '+u.area.nombre+' / ' + u.estante.nombre)} for u in ubicacion.objects.all()]
+                        item['ubicacion'] = [
+                            {'id': u.id, 'nombre': str(u.nombre + ' / ' + u.area.nombre + ' / ' + u.estante.nombre)} for
+                            u in ubicacion.objects.all()]
                         item['ubicacion_id'] = ubicacion.objects.first().id
                         data.append(item)
                 else:
@@ -163,4 +168,46 @@ class inventario_form( TemplateView):
         context['entidad'] = 'Inventarios'
         context['action'] = 'add'
         context['form'] = inventarioForm
+        return context
+
+
+class report_registro(LoginRequiredMixin, ListView):
+    model = inventario
+    template_name = 'reporte/inventario.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        start_date = request.POST.get('start_date', '')
+        end_date = request.POST.get('end_date', '')
+        key = request.POST.get('key', '')
+        try:
+            data = []
+            if key == '0' or key == '2':
+                query = detalle_compra.objects.filter(compra__estado=1, compra__inventario__estado=1,
+                                                      compra__fecha_compra__range=[start_date, end_date])
+            elif key == '1':
+                query = detalle_compra.objects.filter(compra__estado=1, compra__inventario__estado=1,
+                                                      compra__fecha_compra__year=start_date,
+                                                      compra__fecha_compra__month=end_date)
+            else:
+                query = detalle_compra.objects.filter(compra__estado=1, compra__inventario__estado=1)
+            for p in query:
+                ubicacion = inventario.objects.filter(compra_id=p.compra.id).annotate(Count('producto_id')).first()
+                item = p.toJSON()
+                item['ubicacion'] = ubicacion.ubicacion.full_name()
+                data.append(item)
+        except Exception as e:
+            print(e)
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Reporte de productos registrados y ubicacion'
+        context['entidad'] = 'Inventario'
+        context['year'] = year
         return context
