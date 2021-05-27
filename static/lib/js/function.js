@@ -167,7 +167,7 @@ function validar_stilo() {
     }, "Letters and spaces only please");
 
     jQuery.validator.addMethod("mayoredad", function (value, element) {
-        return value>=18 && value<=60;
+        return value >= 18 && value <= 60;
         //[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$
     }, "Debe ingresar un edad entre 18 y 60 años");
 
@@ -221,10 +221,10 @@ function borrar_todo_alert(title, content, callback) {
 
 function menssajeok(title, content, icon, callback) {
     var obj = $.confirm({
-        theme: 'supervan',
-        icon: 'fa fa-smile-o',
+        theme: 'modern',
+        icon: 'far fa-grin-beam',
         title: title,
-        type: 'red',
+        type: 'blue',
         content: content,
         draggable: true,
         buttons: {
@@ -232,15 +232,11 @@ function menssajeok(title, content, icon, callback) {
                 text: '<i class="fas fa-check"></i> Ok',
                 btnClass: 'btn-blue',
                 action: function () {
-
+                    callback();
                 }
             },
         }
     });
-    setTimeout(function () {
-        // some point in future.
-        obj.close();
-    }, 3000);
 }
 
 function printpdf(title, content, callback, cancel) {

@@ -1,5 +1,6 @@
+var datatable;
 $(function () {
-    var datatable = $('#example1').DataTable({
+    datatable = $('#example1').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -31,10 +32,9 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    console.log(row);
                     var detalle = '<a type="button" class="btn btn-outline-success btn-sm btn-round" data-toggle="tooltip" title="Ver Detalle Compra" rel="detalle""><i class="fa fa-search"></i></a> ';
-                    var devolver = row.estado ==='FINALIZADA' ? '<a type="button" class="btn btn-outline-success btn-sm btn-round" data-toggle="tooltip" title="Devolver" rel="devolver""><i class="fa fa-times"></i></a> ':' ';
-                    var pdf = row.estado ==='FINALIZADA' ? '<a type="button" class="btn btn-outline-danger btn-sm btn-round" href="/venta/printpdf/' + data + '" data-toggle="tooltip" title="Imprimir PDF" rel="pdf"><i class="fa fa-file-pdf"></i></a>':' ';
+                    var devolver = row.estado === 'FINALIZADA' ? '<a type="button" class="btn btn-outline-success btn-sm btn-round" data-toggle="tooltip" title="Devolver" rel="devolver"><i class="fa fa-times"></i></a> ' : ' ';
+                    var pdf = row.estado === 'FINALIZADA' ? '<a type="button" class="btn btn-outline-danger btn-sm btn-round" href="/venta/printpdf/' + data + '" data-toggle="tooltip" title="Imprimir PDF" rel="pdf"><i class="fa fa-file-pdf"></i></a>' : ' ';
                     return detalle + pdf + devolver;
                 },
             },
@@ -160,58 +160,60 @@ $(function () {
                 // },
             ],
         },
-    })
-    .on('click', 'a[rel="devolver"]', function () {
-        $('.tooltip').remove();
-        var tr = datatable.cell($(this).closest('td, li')).index();
-        var data = datatable.row(tr.row).data();
-        var parametros = {'id': data.id, 'action': 'devolucion'};
-        save_estado('Alerta',window.location.pathname, 'Esta seguro que desea devolver esta venta?', parametros,
-            function () {
-                menssajeok('Exito!', 'Exito al devolver la venta', 'far fa-smile-wink', function () {
-                    window.location.reload();
-                    //.ajax.reload(null, false);
-                })
-            });
-    }).on('click', 'a[rel="detalle"]', function () {
-        $('.tooltip').remove();
-        var tr = datatable.cell($(this).closest('td, li')).index();
-        var data = datatable.row(tr.row).data();
-        $('#tbldetalle').DataTable({
-            responsive: true,
-            autoWidth: false,
-            destroy: true,
-            deferRender: true,
-            ajax: {
-                url: window.location.pathname,
-                type: 'POST',
-                data: {
-                    'action': 'detalle',
-                    'id': data.id
-                },
-                dataSrc: ""
-            },
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
-            },
-            columns: [
-                {"data": "producto.nombre"},
-                {"data": "cantidad"},
-                {"data": "p_venta_actual"},
-                {"data": "subtotal"},
-
-            ],
-            columnDefs: [
-
-                {
-                    targets: [2],
-                    class: 'text-center',
-                    render: function (data, type, row) {
-                        return '$ ' + data;
-                    }
-                },
-            ]
-        })
-        $('#Modal').modal('show');
     });
+    $('#example1 tbody')
+        .on('click', 'a[rel="devolver"]', function () {
+            $('.tooltip').remove();
+            var tr = datatable.cell($(this).closest('td, li')).index();
+            var data = datatable.row(tr.row).data();
+            var parametros = {'id': data.id, 'action': 'devolucion'};
+            save_estado('Alerta', window.location.pathname, 'Esta seguro que desea devolver esta venta?', parametros,
+                function () {
+                    menssajeok('Exito!', 'Exito al devolver la venta', 'far fa-smile-wink', function () {
+                        // window.location.reload();
+                        datatable.ajax.reload(null, false);
+                    })
+                });
+        })
+        .on('click', 'a[rel="detalle"]', function () {
+            $('.tooltip').remove();
+            var tr = datatable.cell($(this).closest('td, li')).index();
+            var data = datatable.row(tr.row).data();
+            $('#tbldetalle').DataTable({
+                responsive: true,
+                autoWidth: false,
+                destroy: true,
+                deferRender: true,
+                ajax: {
+                    url: window.location.pathname,
+                    type: 'POST',
+                    data: {
+                        'action': 'detalle',
+                        'id': data.id
+                    },
+                    dataSrc: ""
+                },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
+                },
+                columns: [
+                    {"data": "producto.nombre"},
+                    {"data": "cantidad"},
+                    {"data": "p_venta_actual"},
+                    {"data": "subtotal"},
+
+                ],
+                columnDefs: [
+
+                    {
+                        targets: [2],
+                        class: 'text-center',
+                        render: function (data, type, row) {
+                            return '$ ' + data;
+                        }
+                    },
+                ]
+            });
+            $('#Modal').modal('show');
+        });
 });

@@ -6,11 +6,9 @@ class gastoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['tipo_gasto'].widget.attrs['autofocus'] = True
-        self.fields['tipo_gasto'].queryset = tipo_gasto.objects.none()
 
     class Meta:
         model = gasto
-        #exclude = ['empresa']
         fields = '__all__'
         widgets = {
             'tipo_gasto': Select(attrs={

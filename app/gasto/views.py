@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -70,6 +71,14 @@ class gasto_create(LoginRequiredMixin, usuariomixin, CreateView):
                 form = self.form_class(request.POST)
                 if form.is_valid():
                     form.save()
+                else:
+                    data['title'] = 'Registro de Gasto'
+                    data['url'] = reverse_lazy('gasto:lista')
+                    data['entidad'] = 'Gasto'
+                    data['action'] = 'add'
+                    data['form'] = form
+                    data['formtipogasto'] = tipo_gastoForm
+                    return render(request, self.template_name, data)
                 return HttpResponseRedirect(self.success_url)
             elif action == 'add_tipo_gasto':
                 form = self.form_class(request.POST)

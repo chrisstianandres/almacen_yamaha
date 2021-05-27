@@ -1270,14 +1270,6 @@
   }
 },
 {
-  "model": "app.devolucion",
-  "pk": 1,
-  "fields": {
-    "venta": 2,
-    "fecha": "2021-05-23"
-  }
-},
-{
   "model": "cliente.cliente",
   "pk": 2,
   "fields": {
@@ -1777,6 +1769,14 @@
     "nombre": "Cascos grandes",
     "area": 4,
     "estante": 1
+  }
+},
+{
+  "model": "devolucion.devolucion",
+  "pk": 1,
+  "fields": {
+    "venta": 2,
+    "fecha": "2021-05-23"
   }
 }
 ]

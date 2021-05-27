@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'app.area',
     'app.estante',
     'app.ubicacion',
-    # 'app.devolucion'
+    'app.devolucion',
 ]
 
 MIDDLEWARE = [
