@@ -234,8 +234,9 @@ $(function () {
         var parameters = new FormData(this);
         var isvalid = $(this).valid();
         if (isvalid) {
-            parameters.append('action', 'add_venta');
-            submit_with_ajax('/cliente/crear/', 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
+            parameters.append('action', 'create_cliente');
+            submit_with_ajax(window.location.pathname, 'Notificación',
+                '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
 
                 $('#mymodalcliente').modal('hide');
                 var newOption = new Option(response.cliente['full'], response.cliente['id'], false, true);

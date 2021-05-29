@@ -143,7 +143,11 @@ class venta_create(LoginRequiredMixin, usuariomixin, CreateView):
                     data.append(item)
             elif action == 'create_cliente':
                 frm = clienteForm(request.POST)
-                data = frm.save()
+                if frm.is_valid():
+                    cli = frm.save()
+                    data['cliente'] = cli.toJSON()
+                else:
+                    data['error'] = frm.errors
             elif action == 'detalle':
                 data = []
                 porducto = producto.objects.all()

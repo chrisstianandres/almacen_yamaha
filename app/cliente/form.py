@@ -62,7 +62,7 @@ class clienteForm(forms.ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                data = form.save()
             else:
                 data['error'] = form.errors
         except Exception as e:
