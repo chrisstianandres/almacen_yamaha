@@ -4,7 +4,7 @@ $(document).ready(function () {
         return value >= 0.5;
     }, "algo");
      jQuery.validator.addMethod("precio_venta", function (value, element) {
-        return value > $('#id_pvp').val();
+        return parseFloat(value) > parseFloat($('#id_pvp').val());
     }, "");
 
     $("#form").validate({

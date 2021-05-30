@@ -29,27 +29,27 @@
     </div>
     <!-- /.login-logo -->
     <div class="card">
-        <div class="card-body login-card-body">
+        <div class="card-body">
             <p class="login-box-msg">Registrese para iniciar Sesion</p>
 
             <form action="." method="post" id="formlogin">
                 <input type="hidden" name="next" value="{{ next }}">
                 {% csrf_token %}
-                <div class="input-group mb-3">
-                    {{ form.username|add_class:'form-control' |attr:'autocomplete:off' |attr:'placeholder:Ingrese su usuario'|attr:'name:username' }}
-                    <div class="input-group-append">
+                <div class="input-group mb-5">
+                    <div class="input-group-prepend">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
                         </div>
                     </div>
+                    {{ form.username|add_class:'form-control' |attr:'autocomplete:off' |attr:'placeholder:Ingrese su usuario'|attr:'name:username' }}
                 </div>
-                <div class="input-group mb-3">
-                    {{ form.password|add_class:'form-control' |attr:'autocomplete:off' |attr:'placeholder:Ingrese su contraseña' |attr:'name:password' }}
-                    <div class="input-group-append">
+                <div class="input-group mb-5">
+                    <div class="input-group-prepend">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
                         </div>
                     </div>
+                    {{ form.password|add_class:'form-control' |attr:'autocomplete:off' |attr:'placeholder:Ingrese su contraseña' |attr:'name:password' }}
                 </div>
                 <div class="row">
                     <!-- /.col -->
@@ -71,8 +71,8 @@
         <!-- /.login-card-body -->
     </div>
 </div>
-<!-- /.login-box -->
-<script src="{% static 'lib/js/function.js' %}"></script>
+
+
 <!-- jQuery -->
 <script src="{% static 'lib/adminLTE/plugins/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
@@ -81,8 +81,14 @@
 <script src="{% static 'lib/adminLTE/dist/js/adminlte.min.js' %}"></script>
 <!-- SweetAlert -->
 <script src="{% static 'lib/sweetalert/sweetalert2.all.min.js' %}"></script>
-
+<!-- /.login-box -->
+<script src="{% static 'lib/js/function.js' %}"></script>
 <script src="{% static 'app/login.js' %}"></script>
+<script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+
 
 
 </body>
