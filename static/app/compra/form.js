@@ -36,12 +36,13 @@ var compras = {
         $('input[name="total"]').val(this.items.total.toFixed(2));
     },
     list: function () {
+        console.log(compras.items.producto);
         this.calculate();
         datatable = $('#tblProducts').DataTable({
             responsive: true,
             autoWidth: false,
             destroy: true,
-            dom: 'ltip',
+            // dom: 'ltip',
             data: this.items.producto,
             columns: [
                 {"data": "id"},
@@ -52,7 +53,28 @@ var compras = {
                 {"data": "subtotal"},
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json',
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
             },
             columnDefs: [
                 {
@@ -60,7 +82,6 @@ var compras = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        console.log(row);
                         return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white"><i class="fas fa-trash-alt"></i></a>';
                     }
                 },
@@ -70,10 +91,11 @@ var compras = {
                     orderable: false,
                     render: function (data, type, row) {
                         var select = '<select name="ubicacion" class="form-control select2">';
-                            $.each(row.ubicacion, function (key, value) {
-                                select += '<option value="'+value.id+'">'+value.nombre+'';
-                            });
-                            select += '</select>';
+                        select += '<option value="' + row.ubicacion_id + '" selected="selected">' + row.ubicacion_text + '';
+                        $.each(row.ubicacion, function (key, value) {
+                            select += '<option value="' + value.id + '">' + value.nombre + '';
+                        });
+                        select += '</select>';
 
                         return select
                     }
@@ -115,13 +137,6 @@ var compras = {
                 });//Para solo numeros
             }
         });
-    },
-    exclude_duplicados: function (array) {
-        this.items.producto = [];
-        let hash = {};
-        result = array.filter(o => hash[o.id] ? false : hash[o.id] = true);
-        return result;
-
     }
 };
 $(function () {
@@ -197,8 +212,7 @@ $(function () {
                 {"data": "nombre"},
                 {"data": "marca.nombre"},
                 {"data": "modelo.nombre"},
-                {"data": "id"},
-                //{"data": "subtotal"},
+                {"data": "id"}
 
             ],
             columnDefs: [
@@ -270,7 +284,7 @@ $(function () {
         },
         placeholder: 'Ingrese una descripción',
         minimumInputLength: 1,
-    })
+    });
 
     $('.btnRemoveAll').on('click', function () {
         if (compras.items.producto.length === 0) return false;
@@ -302,6 +316,13 @@ $(function () {
             compras.items.producto[tr.row].cantidad = cantidad;
             compras.calculate();
             $('td:eq(5)', datatable.row(tr.row).node()).html('$' + compras.items.producto[tr.row].subtotal.toFixed(2));
+        })
+        .on('change keyup', 'select[name="ubicacion"]', function () {
+            var ubicacion = parseInt($(this).val());
+            var text = $(this).find('option:selected').text();
+            var tr = datatable.cell($(this).closest('td, li')).index();
+            compras.items.producto[tr.row].ubicacion_id = ubicacion;
+            compras.items.producto[tr.row].ubicacion_text = text;
         });
     $('#save').on('click', function () {
         if ($('select[name="proveedor"]').val() === "") {

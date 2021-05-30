@@ -13,7 +13,7 @@ class ubicacion(models.Model):
         return '{} / {} / {}'.format( self.nombre, self.area.nombre, self.estante.nombre)
 
     def full_name(self):
-        return '{} / {} / {}'.format( self.nombre, self.area.nombre, self.estante.nombre)
+        return '{} / {} / {}'.format( self.nombre, self.area.nombre, 'Estante '+self.estante.nombre)
 
     def toJSON(self):
         item = model_to_dict(self)

@@ -84,14 +84,15 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
                 data = []
                 ids = json.loads(request.POST['ids'])
                 prods = producto.objects.filter(nombre__icontains=request.POST['term']).exclude(id__in=ids)[0:10]
+                ub = ubicacion.objects.first()
+                ubicacion_select = [{'id': u.id, 'nombre': u.full_name()} for u in ubicacion.objects.all().exclude(id=ub.id)]
                 for i in prods:
                     item = i.toJSON()
                     item['value'] = i.nombre_full()
-                    if ubicacion.objects.all():
-                        item['ubicacion'] = [
-                            {'id': u.id, 'nombre': str(u.nombre + ' / ' + u.area.nombre + ' / ' + u.estante.nombre)}
-                            for u in ubicacion.objects.all()]
-                        item['ubicacion_id'] = ubicacion.objects.first().id
+                    if ub:
+                        item['ubicacion'] = ubicacion_select
+                        item['ubicacion_id'] = ub.id
+                        item['ubicacion_text'] = ub.full_name()
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
@@ -135,15 +136,16 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
                 data = frm.save()
             elif action == 'detalle':
                 data = []
-                prods = producto.objects.all()
+                prods = producto.objects.all().select_related('marca').select_related('modelo')
+                ub = ubicacion.objects.first()
+                ubicacion_select = [{'id': u.id, 'nombre': u.full_name()} for u in ubicacion.objects.all().exclude(id=ub.id)]
                 ids = json.loads(request.POST['ids'])
                 for i in prods.exclude(id__in=ids):
                     item = i.toJSON()
-                    if ubicacion.objects.all():
-                        item['ubicacion'] = [
-                            {'id': u.id, 'nombre': str(u.nombre + ' / ' + u.area.nombre + ' / ' + u.estante.nombre)}
-                            for u in ubicacion.objects.all()]
-                        item['ubicacion_id'] = ubicacion.objects.first().id
+                    if ub:
+                        item['ubicacion'] = ubicacion_select
+                        item['ubicacion_id'] = ub.id
+                        item['ubicacion_text'] = ub.full_name()
                     data.append(item)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'

@@ -1,0 +1,48 @@
+{% extends 'bases/list.html' %}
+{% load static %}
+{% block head_extra %}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'lib/datatables/Buttons-1.6.5/css/buttons.bootstrap4.css' %}"/>
+{% endblock %}
+{% block boton_nuevo %}
+
+{% endblock %}
+{% block table %}
+
+    <thead>
+    <tr>
+        <th>Producto</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Precio</th>
+        <th>Stock</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>Total: </th>
+        <th></th>
+
+    </tr>
+    </tfoot>
+
+{% endblock %}
+{% block scripts_extra %}
+    <script src="{% static 'app/inventario/stock.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/moment-2.25.3/moment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/daterangepicker/daterangepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/daterangepicker/spanish.js' %}"></script>
+    <!-- botones del datatable -->
+    <script type="text/javascript" src="{% static 'lib/datatables/JSZip-2.5.0/jszip.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/datatables/pdfmake-0.1.36/pdfmake.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/datatables/pdfmake-0.1.36/vfs_fonts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/datatables/Buttons-1.6.5/js/dataTables.buttons.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/datatables/Buttons-1.6.5/js/buttons.bootstrap4.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/datatables/Buttons-1.6.5/js/buttons.html5.js' %}"></script>
+{% endblock %}

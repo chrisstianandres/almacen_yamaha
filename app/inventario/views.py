@@ -38,8 +38,7 @@ class inventario_list(LoginRequiredMixin, usuariomixin, ListView):
             if action == 'searchdata':
                 data = []
                 for i in producto.objects.all():
-                    stock = inventario.objects.filter(estado=1, producto_id=i.id).aggregate(
-                        stock=Coalesce(Count('id'), 0)).get('stock')
+                    stock = inventario.objects.filter(estado=1, producto_id=i.id).aggregate(stock=Coalesce(Count('id'), 0)).get('stock')
                     item = i.toJSON()
                     item['stock'] = stock
                     data.append(item)
@@ -210,4 +209,38 @@ class report_registro(LoginRequiredMixin, ListView):
         context['title'] = 'Reporte de productos registrados y ubicacion'
         context['entidad'] = 'Inventario'
         context['year'] = year
+        return context
+
+
+class inventario_stock(LoginRequiredMixin, usuariomixin, ListView):
+    model = inventario
+    template_name = 'inventario/inventario_stock.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in producto.objects.all():
+                    stock = inventario.objects.filter(estado=1, producto_id=i.id).aggregate(stock=Coalesce(Count('id'), 0)).get('stock')
+                    item = i.toJSON()
+                    item['stock'] = stock
+                    data.append(item)
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            print(e)
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Reporte de Inventario'
+        # context['url'] = reverse_lazy('empleado:lista')
+        context['entidad'] = 'Inventario'
         return context
