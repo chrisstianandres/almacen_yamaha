@@ -120,7 +120,7 @@ class compra_create(LoginRequiredMixin, usuariomixin, CreateView):
                             inv.ubicacion_id = int(i['ubicacion_id'])
                             inv.save()
                         comp = compra.objects.get(id=c.id)
-                        comp.inventario_estado = 1
+                        comp.inv_estado = 1
                         comp.save()
             elif action == 'search_proveedor':
                 data = []

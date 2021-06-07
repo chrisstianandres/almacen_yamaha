@@ -16,7 +16,6 @@ var datos = {
             data: this.fechas,
             success: function (data) {
                 datos.items.modelos = data;
-
                 listar();
             }
         });

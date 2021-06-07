@@ -186,21 +186,26 @@ class report_registro(LoginRequiredMixin, ListView):
         try:
             data = []
             if key == '0' or key == '2':
-                query = detalle_compra.objects.filter(compra__estado=1, compra__inventario__estado=1,
-                                                      compra__fecha_compra__range=[start_date, end_date])
+                 query = inventario.objects.values('compra__fecha_compra', 'producto__id', 'ubicacion_id').filter(
+                    compra__estado=1, compra__inv_estado=1,
+                    compra__fecha_compra__range=[start_date,
+                                                 end_date]).annotate(Count('producto__id')).order_by('producto__id')
+
             elif key == '1':
-                query = detalle_compra.objects.filter(compra__estado=1, compra__inventario__estado=1,
-                                                      compra__fecha_compra__year=start_date,
-                                                      compra__fecha_compra__month=end_date)
+                query = inventario.objects.values('compra__fecha_compra', 'producto__id', 'ubicacion_id').filter(
+                    compra__estado=1, compra__inv_estado=1,
+                    compra__fecha_compra__year=start_date,
+                    compra__fecha_compra__month=end_date).annotate(Count('producto__id')).order_by('producto__id')
             else:
-                query = detalle_compra.objects.filter(compra__estado=1, compra__inventario__estado=1)
-            for p in query:
-                ubicacion = inventario.objects.filter(compra_id=p.compra.id).annotate(Count('producto_id')).first()
-                item = p.toJSON()
-                item['ubicacion'] = ubicacion.ubicacion.full_name()
+                query = inventario.objects.values('compra__fecha_compra', 'producto__id', 'ubicacion_id').filter(
+                    compra__estado=1, compra__inv_estado=1).annotate(Count('producto__id')).order_by('producto__id')
+            for t in query:
+                prod = producto.objects.get(id=t['producto__id'])
+                ubica = ubicacion.objects.get(id=t['ubicacion_id'])
+                item = {'fecha': t['compra__fecha_compra'], 'producto': prod.nombre_full(),
+                        'ubicacion': ubica.full_name(), 'cantidad': t['producto__id__count']}
                 data.append(item)
         except Exception as e:
-            print(e)
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 

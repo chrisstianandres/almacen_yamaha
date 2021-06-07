@@ -144,8 +144,8 @@ $(function () {
             },
         ],
         columns: [
-            {"data": "compra.fecha_compra"},
-            {"data": "producto.nombre_full"},
+            {"data": "fecha"},
+            {"data": "producto"},
             {"data": "ubicacion"},
             {"data": "cantidad"}
         ],

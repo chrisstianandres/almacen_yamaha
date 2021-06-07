@@ -22,7 +22,7 @@ class compra(models.Model):
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.IntegerField(choices=estado, default=1)
     comprobante = models.CharField(max_length=100, unique=True)
-    inventario_estado = models.IntegerField(choices=inventario, default=0)
+    inv_estado = models.IntegerField(choices=inventario, default=0)
 
     def __str__(self):
         return '%s %s' % (self.fecha_compra, self.proveedor.nombres)

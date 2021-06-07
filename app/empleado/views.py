@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -67,7 +68,15 @@ class empleado_create(LoginRequiredMixin,usuariomixin,CreateView):
             action = request.POST['action']
             if action == 'add':
                 form = self.get_form()
-                data = form.save()
+                if form.is_valid():
+                    data = form.save()
+                else:
+                    data['title'] = 'Registro de Empleado'
+                    data['url'] = reverse_lazy('empleado:lista')
+                    data['entidad'] = 'Empleado'
+                    data['action'] = 'add'
+                    data['form'] = form
+                    return render(request, self.template_name, data)
                 return HttpResponseRedirect(self.success_url)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -84,7 +93,7 @@ class empleado_create(LoginRequiredMixin,usuariomixin,CreateView):
         return context
 
 
-class empleado_update(LoginRequiredMixin,usuariomixin,UpdateView):
+class empleado_update(LoginRequiredMixin, usuariomixin, UpdateView):
     model = empleado
     form_class = empleadoForm
     template_name = 'empleado/empleado_form.html'
@@ -99,12 +108,22 @@ class empleado_update(LoginRequiredMixin,usuariomixin,UpdateView):
         try:
             action = request.POST['action']
             if action == 'edit':
-                form = self.get_form()
-                data = form.save()
+                emp = empleado.objects.get(id=self.kwargs['pk'])
+                form = empleadoForm(request.POST, instance=emp)
+                if form.is_valid():
+                    data = form.save()
+                else:
+                    data['title'] = 'Registro de Empleado'
+                    data['url'] = reverse_lazy('empleado:lista')
+                    data['entidad'] = 'Empleado'
+                    data['action'] = 'add'
+                    data['form'] = form
+                    return render(request, self.template_name, data)
                 return HttpResponseRedirect(self.success_url)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
+            print(e)
             data['error'] = str(e)
         return JsonResponse(data)
 

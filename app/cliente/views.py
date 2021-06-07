@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -78,7 +79,14 @@ class cliente_create(LoginRequiredMixin, usuariomixin, CreateView):
                 form = self.form_class(request.POST)
                 if form.is_valid():
                     form.save()
-                    return HttpResponseRedirect(self.success_url)
+                else:
+                    data['title'] = 'Registro de Cliente'
+                    data['url'] = reverse_lazy('cliente:lista')
+                    data['entidad'] = 'Cliente'
+                    data['action'] = 'add'
+                    data['form'] = form
+                    return render(request, self.template_name, data)
+                return HttpResponseRedirect(self.success_url)
             elif action == 'add_venta':
                 form = self.form_class(request.POST)
                 if form.is_valid():
